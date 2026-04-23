@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>和風便器検査設備 3Dアニメーション v7</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#e0d8c0;font-family:'Noto Sans JP','Meiryo',sans-serif;overflow:hidden;}
+#cc{width:100vw;height:100vh;position:relative;}
+canvas{display:block;cursor:grab;}canvas:active{cursor:grabbing;}
+#ui{position:absolute;top:14px;left:14px;color:#e2e8f0;background:rgba(10,18,32,0.93);
+  border:1px solid rgba(56,189,248,0.28);border-radius:9px;padding:10px;width:120px;
+  backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,0.5);user-select:none;}
+#ui h2{font-size:9px;color:#64748b;margin-bottom:6px;letter-spacing:1.5px;
+  border-bottom:1px solid rgba(56,189,248,0.16);padding-bottom:4px;}
+.sl{list-style:none;}
+.sl li{padding:2px 4px;border-radius:3px;margin:1px 0;font-size:8.5px;color:#2d3f52;
+  display:flex;align-items:center;gap:4px;transition:background .2s,color .2s;white-space:nowrap;}
+.sl li.active{background:rgba(56,189,248,.15);color:#7dd3fc;border-left:2px solid #38bdf8;padding-left:3px;}
+.sl li.done{color:#22c55e55;}
+.sn{font-size:7.5px;opacity:.4;min-width:14px;font-family:'Courier New',monospace;}
+#pb{margin-top:6px;height:2px;background:rgba(56,189,248,.10);border-radius:2px;overflow:hidden;}
+#pf{height:100%;background:linear-gradient(90deg,#38bdf8,#818cf8);transition:width .3s;}
+#st{position:absolute;top:14px;right:14px;color:#f1f5f9;font-size:13px;font-weight:600;
+  background:rgba(10,18,32,0.93);border:1px solid rgba(56,189,248,.26);border-radius:9px;
+  padding:10px 15px;max-width:200px;text-align:center;backdrop-filter:blur(12px);
+  line-height:1.7;box-shadow:0 4px 18px rgba(0,0,0,.4);}
+#st .snum{color:#38bdf8;font-size:9px;letter-spacing:2px;font-family:'Courier New',monospace;}
+#ctrl{position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
+  display:flex;gap:9px;align-items:center;background:rgba(10,18,32,.92);
+  border:1px solid rgba(56,189,248,.22);border-radius:36px;padding:9px 20px;
+  backdrop-filter:blur(12px);box-shadow:0 4px 18px rgba(0,0,0,.5);z-index:10;}
+#inlet-sel{display:flex;flex-direction:column;align-items:center;gap:3px;}
+#inlet-sel .cb{padding:4px 10px;font-size:10px;}
+  display:flex;gap:9px;align-items:center;background:rgba(10,18,32,.92);
+  border:1px solid rgba(56,189,248,.22);border-radius:36px;padding:9px 20px;
+  backdrop-filter:blur(12px);box-shadow:0 4px 18px rgba(0,0,0,.5);z-index:10;}
+.cb{background:rgba(30,50,80,.8);color:#94a3b8;border:1px solid rgba(56,189,248,.22);
+  border-radius:7px;padding:7px 16px;font-size:11px;cursor:pointer;transition:all .18s;
+  font-weight:500;white-space:nowrap;}
+.cb:hover{background:rgba(56,189,248,.18);color:#e0f2fe;border-color:#38bdf8;}
+.cb.active{background:rgba(56,189,248,.20);color:#38bdf8;border-color:#38bdf8;}
+.cb.danger{border-color:rgba(248,113,113,.28);}
+.cb.danger:hover{background:rgba(248,113,113,.14);color:#fca5a5;border-color:#f87171;}
+#si{font-size:10px;color:#475569;font-family:'Courier New',monospace;min-width:60px;text-align:center;}
+#vb{position:absolute;bottom:52px;right:14px;display:flex;flex-direction:column;gap:5px;z-index:10;}
+.vbtn{background:rgba(10,18,32,.88);color:#64748b;border:1px solid rgba(56,189,248,.18);
+  border-radius:6px;padding:5px 11px;font-size:10px;cursor:pointer;transition:all .18s;}
+.vbtn:hover,.vbtn.active{background:rgba(56,189,248,.14);color:#38bdf8;border-color:#38bdf8;}
+#help{position:absolute;bottom:130px;left:14px;color:#2d3f52;font-size:9px;line-height:1.9;
+  background:rgba(10,18,32,.80);border-radius:7px;padding:6px 10px;
+  backdrop-filter:blur(6px);border:1px solid rgba(56,189,248,.06);}
+#tb{position:absolute;top:0;left:0;height:2px;width:0%;
+  background:linear-gradient(90deg,#38bdf8,#818cf8);pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="cc">
+  <div id="tb"></div>
+  <div id="ui">
+    <h2>⚙ STEPS</h2>
+    <ul class="sl" id="sl"></ul>
+    <div id="pb"><div id="pf" style="width:0%"></div></div>
+  </div>
+  <div id="st"><div class="snum" id="snum">READY</div><div id="sdesc">初期状態</div></div>
+  <div id="ctrl">
+    <div id="inlet-sel">
+      <span style="font-size:9px;color:#94a3b8;white-space:nowrap;">給水口選択</span>
+      <div style="display:flex;gap:4px;margin-top:3px;">
+        <button class="cb active" id="isel-top" onclick="setInlet('top',this)">上面</button>
+        <button class="cb" id="isel-side" onclick="setInlet('side',this)">側面</button>
+      </div>
+    </div>
+    <div style="width:1px;height:36px;background:rgba(56,189,248,.18);margin:0 4px;"></div>
+    <button class="cb" id="bstart" onclick="togglePlay()">▶ 開始</button>
+    <button class="cb" onclick="startOneCycle()">↺ 1サイクル</button>
+    <button class="cb" onclick="stepOnce()">⏭ 1ステップ</button>
+    <button class="cb danger" onclick="resetAll()">⏹ リセット</button>
+    <div id="si">STEP —</div>
+  </div>
+  <div id="vb">
+    <button class="vbtn active" id="vi" onclick="setView('iso',this)">アイソメ</button>
+    <button class="vbtn" id="vf" onclick="setView('front',this)">正面図</button>
+    <button class="vbtn" id="vt" onclick="setView('top',this)">上面図</button>
+    <button class="vbtn" id="vs" onclick="setView('side',this)">側面図</button>
+  </div>
+  <div id="help">🖱 左ドラッグ：視点回転　ホイール：ズーム<br>右ドラッグ：移動　右下：視点切替</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── STEPS (12) ────────────────────────────────────────────────
+const steps=[
+  {n:"STEP 1", d:"上面シール\n自然降下"},
+  {n:"STEP 2", d:"後部シリンダ\nワーク押し付け"},
+  {n:"STEP 3", d:"上面シール\nさらに押し付け"},
+  {n:"STEP 4", d:"給水口・排水口シール\n押し付け"},
+  {n:"STEP 5", d:"漏水検査実施"},
+  {n:"STEP 6", d:"給水口シール\n戻り"},
+  {n:"STEP 7", d:"給水・排水口シール\n戻り"},
+  {n:"STEP 8", d:"漏気検査実施"},
+  {n:"STEP 9", d:"排水口・後部シリンダ\n戻り"},
+  {n:"STEP 10",d:"合格スタンプ"},
+  {n:"STEP 11",d:"上面シール\n戻り"},
+];
+const slabels=["上面シール降下","後部シリンダ押付","上面シール押付","給水口・排水口シール押付",
+  "漏水検査","給水口シール戻り","給水・排水口シール戻り","漏気検査",
+  "排水口・後部シリンダ戻り","合格スタンプ","上面シール戻り"];
+const ul=document.getElementById('sl');
+slabels.forEach((s,i)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<span class="sn">${String(i+1).padStart(2,'0')}</span>${s}`;
+  ul.appendChild(li);
+});
+
+// ── THREE ─────────────────────────────────────────────────────
+const cc=document.getElementById('cc');
+const W=()=>cc.clientWidth,H=()=>cc.clientHeight;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0xe0d8c0);
+scene.fog=new THREE.Fog(0xe0d8c0,26,46);
+const camera=new THREE.PerspectiveCamera(42,W()/H(),0.05,100);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(devicePixelRatio);renderer.setSize(W(),H());
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+cc.appendChild(renderer.domElement);
+
+// ── ORBIT ─────────────────────────────────────────────────────
+const orb={theta:.52,phi:1.05,radius:13,target:new THREE.Vector3(0,2.5,0),
+  lx:0,ly:0,mb:-1,animating:false,animT:0,
+  at:{theta:0,phi:0,radius:0,tx:0,ty:0,tz:0}};
+function applyOrb(){
+  const x=orb.target.x+orb.radius*Math.sin(orb.phi)*Math.sin(orb.theta);
+  const y=orb.target.y+orb.radius*Math.cos(orb.phi);
+  const z=orb.target.z+orb.radius*Math.sin(orb.phi)*Math.cos(orb.theta);
+  camera.position.set(x,y,z);camera.lookAt(orb.target);
+}
+function setView(type,el){
+  document.querySelectorAll('.vbtn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  orb.animating=true;orb.animT=0;
+  const a=orb.at;a.tx=0;a.ty=2.5;a.tz=0;
+  if(type==='iso')  {a.theta=.52;a.phi=1.05;a.radius=13;}
+  if(type==='front'){a.theta=.01;a.phi=1.22;a.radius=12;}
+  if(type==='top')  {a.theta=.01;a.phi=.10;a.radius=14;}
+  if(type==='side') {a.theta=Math.PI/2;a.phi=1.18;a.radius=12;}
+}
+const cv=renderer.domElement;
+cv.addEventListener('mousedown',e=>{orb.mb=e.button;orb.lx=e.clientX;orb.ly=e.clientY;});
+window.addEventListener('mouseup',()=>{orb.mb=-1;});
+window.addEventListener('mousemove',e=>{
+  const dx=e.clientX-orb.lx,dy=e.clientY-orb.ly;
+  orb.lx=e.clientX;orb.ly=e.clientY;
+  if(orb.mb===0){orb.theta-=dx*.007;orb.phi=Math.max(.08,Math.min(Math.PI-.08,orb.phi+dy*.007));applyOrb();}
+  if(orb.mb===2){const sc=orb.radius*.0012;const fwd=new THREE.Vector3();camera.getWorldDirection(fwd);
+    const up=new THREE.Vector3(0,1,0);const right=fwd.clone().cross(up).normalize();
+    orb.target.addScaledVector(right,-dx*sc);orb.target.addScaledVector(up,dy*sc);applyOrb();}
+});
+cv.addEventListener('wheel',e=>{orb.radius=Math.max(3,Math.min(30,orb.radius+e.deltaY*.012));applyOrb();e.preventDefault();},{passive:false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+applyOrb();
+
+// ── LIGHTS ────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0xfff8e8,.70));
+function dL(col,int,x,y,z,sh=false){const l=new THREE.DirectionalLight(col,int);l.position.set(x,y,z);if(sh){l.castShadow=true;l.shadow.mapSize.set(2048,2048);}scene.add(l);return l;}
+dL(0xfff5e0,.90,5,12,6,true);dL(0xffeedd,.40,-5,9,4);dL(0xfff8e8,.35,0,7,-8);dL(0xffffff,.20,0,-4,0);
+const iL1=new THREE.PointLight(0xfff8e8,2.8,10);iL1.position.set(0,5.2,0);scene.add(iL1);
+const iL2=new THREE.PointLight(0xfff4e0,2.6,8);iL2.position.set(0,2.6,0);scene.add(iL2);
+const iL3=new THREE.PointLight(0xffeedd,1.8,7);iL3.position.set(1.2,3.8,.5);scene.add(iL3);
+const iL4=new THREE.PointLight(0xfff0e8,1.8,7);iL4.position.set(-1.2,3.8,-.5);scene.add(iL4);
+const gLeak=new THREE.PointLight(0x1155ff,0,7);gLeak.position.set(0,2,0);scene.add(gLeak);
+const gAir=new THREE.PointLight(0x11ddff,0,7);gAir.position.set(0,2,0);scene.add(gAir);
+
+// ── MATERIALS ─────────────────────────────────────────────────
+function mat(col,met=.3,rou=.5){return new THREE.MeshStandardMaterial({color:col,metalness:met,roughness:rou});}
+const gaugeGlassMat=new THREE.MeshStandardMaterial({color:0xffffff,metalness:0,roughness:.05,transparent:true,opacity:.18,side:THREE.DoubleSide,depthWrite:false});
+const airGlassMat=new THREE.MeshStandardMaterial({color:0xffffff,metalness:0,roughness:.05,transparent:true,opacity:.18,side:THREE.DoubleSide,depthWrite:false});
+const M={
+  frame:   mat(0x78c040,.35,.50), frameDk: mat(0x5a9030,.40,.45),
+  ceramic: new THREE.MeshStandardMaterial({color:0xc8baaa,metalness:.03,roughness:.42,transparent:true,opacity:.28,depthWrite:false}),
+  cerIn:   new THREE.MeshStandardMaterial({color:0x8a7868,metalness:.04,roughness:.58,transparent:true,opacity:.28,depthWrite:false}),
+  cerRim:  new THREE.MeshStandardMaterial({color:0xbcaf9e,metalness:.04,roughness:.38,transparent:true,opacity:.28,depthWrite:false}),
+  stLt:    mat(0xaabccc,.88,.15), stMd:    mat(0x7a8fa0,.80,.20), stDk:    mat(0x3a4e60,.75,.25),
+  cylBlu:  mat(0x1e44aa,.72,.20), cylOra:  mat(0x995500,.72,.22), cylGrn:  mat(0x116633,.72,.22),
+  cylRed:  mat(0xaa2222,.72,.22), cylRod:  mat(0xb8cad8,.92,.10), rubber:  mat(0x111111,0,.95),
+  stampPad:mat(0xcc1111,.02,.85),
+  pallet:  mat(0x1e2e3e,.50,.55), panFloor:mat(0x182636,.45,.60),
+  tubeBlu: new THREE.MeshStandardMaterial({color:0x2255cc,metalness:.2,roughness:.6,transparent:true,opacity:.65}),
+  tubeCl:  new THREE.MeshStandardMaterial({color:0x88ccee,metalness:.1,roughness:.5,transparent:true,opacity:.50}),
+  leakWat: new THREE.MeshStandardMaterial({color:0x1144cc,metalness:0,roughness:.2,transparent:true,opacity:.70}),
+  airWat:  new THREE.MeshStandardMaterial({color:0x1155bb,metalness:0,roughness:.2,transparent:true,opacity:.65}),
+};
+
+// ── HELPERS ───────────────────────────────────────────────────
+const clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
+const lerp=(a,b,t)=>a+(b-a)*clamp(t,0,1);
+function mkBox(w,h,d,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.castShadow=true;o.receiveShadow=true;return o;}
+function mkCyl(rt,rb,h,m,s=20){const o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,s),m);o.castShadow=true;return o;}
+function edge(mesh,col=0x556677,op=.60){mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op})));}
+function mkTube(pts,r,m,segs=20){const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)));return new THREE.Mesh(new THREE.TubeGeometry(curve,segs,r,8,false),m);}
+function ovalShape(rx,rz,n=32){const s=new THREE.Shape();for(let i=0;i<=n;i++){const a=(i/n)*Math.PI*2;i===0?s.moveTo(Math.cos(a)*rx,Math.sin(a)*rz):s.lineTo(Math.cos(a)*rx,Math.sin(a)*rz);}s.closePath();return s;}
+function roundedRect(hw,hl,r){const s=new THREE.Shape();s.moveTo(-hw+r,-hl);s.lineTo(hw-r,-hl);s.quadraticCurveTo(hw,-hl,hw,-hl+r);s.lineTo(hw,hl-r);s.quadraticCurveTo(hw,hl,hw-r,hl);s.lineTo(-hw+r,hl);s.quadraticCurveTo(-hw,hl,-hw,hl-r);s.lineTo(-hw,-hl+r);s.quadraticCurveTo(-hw,-hl,-hw+r,-hl);return s;}
+
+// ── FLOOR ─────────────────────────────────────────────────────
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(32,32),new THREE.MeshLambertMaterial({color:0xb8aa88}));
+floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+scene.add(new THREE.GridHelper(32,32,0x9a8c6a,0xb8aa80));
+
+// ── FRAME ─────────────────────────────────────────────────────
+const FX=1.32,FZ=1.62,FH=5.4;
+const frameG=new THREE.Group();scene.add(frameG);
+[[-FX,-FZ],[FX,-FZ],[-FX,FZ],[FX,FZ]].forEach(([x,z])=>{
+  const p=mkBox(.10,FH,.10,M.frame);p.position.set(x,FH/2,z);
+  p.add(new THREE.LineSegments(new THREE.EdgesGeometry(p.geometry),new THREE.LineBasicMaterial({color:0x88ff44,transparent:true,opacity:.28})));
+  frameG.add(p);
+});
+[[FX*2,.09,.09,0,FH,FZ],[FX*2,.09,.09,0,FH,-FZ],[.09,.09,FZ*2,-FX,FH,0],[.09,.09,FZ*2,FX,FH,0],
+ [FX*2,.09,.09,0,FH-.5,0],
+ [FX*2,.08,.08,0,3.8,FZ],[FX*2,.08,.08,0,3.8,-FZ],
+ [FX*2,.08,.08,0,.06,FZ],[FX*2,.08,.08,0,.06,-FZ],
+ [.09,.09,FZ*2,-FX,.06,0],[.09,.09,FZ*2,FX,.06,0]
+].forEach(([w,h,d,x,y,z])=>{const b=mkBox(w,h,d,y>3?M.frame:M.frameDk);b.position.set(x,y,z);frameG.add(b);});
+[[-FX,-FZ],[FX,-FZ],[-FX,FZ],[FX,FZ]].forEach(([x,z])=>{const f=mkCyl(.055,.085,.22,M.stMd);f.position.set(x,.11,z);frameG.add(f);});
+
+// ── DRIP PAN ──────────────────────────────────────────────────
+const panBase=mkBox(FX*2,.06,FZ*2,M.panFloor);panBase.position.y=.16;edge(panBase,0x4488aa,.28);scene.add(panBase);
+[[FX*2,.20,.04,0,.26,FZ],[FX*2,.20,.04,0,.26,-FZ],[.04,.20,FZ*2,-FX,.26,0],[.04,.20,FZ*2,FX,.26,0]].forEach(([w,h,d,x,y,z])=>{const pw=mkBox(w,h,d,M.panFloor);pw.position.set(x,y,z);scene.add(pw);});
+
+// ── STAGE ─────────────────────────────────────────────────────
+const STAGE_Y=1.80,STAGE_W=1.25,STAGE_D=2.0,GAP=0.60;
+const RAIL_W=(STAGE_W-GAP)/2,RAIL_CX=(GAP+RAIL_W)/2,RAIL_T=.08;
+const stageG=new THREE.Group();stageG.position.y=STAGE_Y;scene.add(stageG);
+[-1,1].forEach(s=>{const r=mkBox(RAIL_W,RAIL_T,STAGE_D,M.pallet);r.position.set(s*RAIL_CX,0,0);r.receiveShadow=true;edge(r,0x4488aa,.30);stageG.add(r);});
+[-STAGE_D/2+.05,STAGE_D/2-.05].forEach(z=>{const xb=mkBox(STAGE_W,.05,.06,M.stDk);xb.position.set(0,-RAIL_T/2-.025,z);stageG.add(xb);});
+const legH=STAGE_Y-.40;
+[[-RAIL_CX,-STAGE_D/2+.09],[-RAIL_CX,STAGE_D/2-.09],[RAIL_CX,-STAGE_D/2+.09],[RAIL_CX,STAGE_D/2-.09]].forEach(([x,z])=>{
+  const leg=mkBox(.08,legH,.08,M.stDk);leg.position.set(x,-RAIL_T/2-legH/2,z);edge(leg,0x4488aa,.22);stageG.add(leg);
+  const foot=mkCyl(.05,.08,.15,M.stMd);foot.position.set(x,-RAIL_T/2-legH-.08,z);stageG.add(foot);
+});
+// 十字ブレース削除（br1/br2 removed per request）
+
+// ── WORKPIECE ─────────────────────────────────────────────────
+const bodyHW=.27,bodyHL=.45,bodyDepth=.40,flangeW=.18,flangeThk=.065;
+const rHW2=.40,rHH2=.080,rHD2=.16;
+const workG=new THREE.Group();scene.add(workG);
+// ① 本体（下突出）
+const bodyShape=roundedRect(bodyHW,bodyHL,.06);
+const bodyMesh=new THREE.Mesh(new THREE.ExtrudeGeometry(bodyShape,{depth:bodyDepth,bevelEnabled:true,bevelThickness:.016,bevelSize:.016,bevelSegments:4}),M.ceramic);
+bodyMesh.rotation.x=Math.PI/2;bodyMesh.position.y=-flangeThk;bodyMesh.castShadow=true;bodyMesh.receiveShadow=true;
+workG.add(bodyMesh);edge(bodyMesh,0x2a1a0a,.80);
+// ② 側面フランジ
+[-1,1].forEach(s=>{
+  const fl=mkBox(flangeW,flangeThk,bodyHL*2+.04,M.ceramic);fl.position.set(s*(bodyHW+flangeW/2),-flangeThk/2,0);fl.castShadow=true;fl.receiveShadow=true;workG.add(fl);edge(fl,0x2a1a0a,.80);
+  [-bodyHL,bodyHL].forEach(z=>{const cap=mkCyl(flangeThk/2,flangeThk/2,flangeW,M.ceramic,12);cap.rotation.z=Math.PI/2;cap.position.set(s*(bodyHW+flangeW/2),-flangeThk/2,z);workG.add(cap);});
+  const side=mkBox(.015,bodyDepth+flangeThk,bodyHL*2,M.ceramic);side.position.set(s*(bodyHW+flangeW),-(flangeThk+bodyDepth)/2,0);workG.add(side);
+});
+// ③ 後部ハウジング（-Z奥側）
+const rHsg=mkBox(rHW2,rHH2,rHD2,M.ceramic);rHsg.position.set(0,rHH2/2,-bodyHL+rHD2/2);rHsg.castShadow=true;workG.add(rHsg);edge(rHsg,0x2a1a0a,.75);
+[-1,1].forEach(s=>{const hw=mkBox(.014,rHH2,rHD2,M.ceramic);hw.position.set(s*rHW2/2,rHH2/2,-bodyHL+rHD2/2);workG.add(hw);});
+// ④ 前端
+const nose1=mkBox(bodyHW*2+.04,.05,.10,M.ceramic);nose1.position.set(0,-.025,bodyHL-.05);workG.add(nose1);edge(nose1,0x2a1a0a,.75);
+const nose2=mkCyl(.025,.025,bodyHW*2,M.ceramic,10);nose2.rotation.z=Math.PI/2;nose2.position.set(0,-.025,bodyHL);workG.add(nose2);
+// ⑤ ボウルリム
+const rimShape=ovalShape(.20,.28);
+const rimHolePath=new THREE.Path();
+for(let i=0;i<=32;i++){const a=(i/32)*Math.PI*2;i===0?rimHolePath.moveTo(Math.cos(a)*.145,Math.sin(a)*.205):rimHolePath.lineTo(Math.cos(a)*.145,Math.sin(a)*.205);}
+rimHolePath.closePath();rimShape.holes.push(rimHolePath);
+const rimMesh=new THREE.Mesh(new THREE.ExtrudeGeometry(rimShape,{depth:.032,bevelEnabled:true,bevelThickness:.008,bevelSize:.008,bevelSegments:3}),M.cerRim);
+rimMesh.rotation.x=-Math.PI/2;rimMesh.position.set(0,.001,-.08);rimMesh.castShadow=true;workG.add(rimMesh);edge(rimMesh,0x2a1a0a,.70);
+// ⑥ ボウル
+const bowlMesh=new THREE.Mesh(new THREE.ExtrudeGeometry(ovalShape(.14,.20),{depth:.09,bevelEnabled:false}),M.cerIn);
+bowlMesh.rotation.x=-Math.PI/2;bowlMesh.position.set(0,.01,-.08);workG.add(bowlMesh);
+// ⑦ フラッシュチャンネル
+const chan=mkBox(bodyHW*1.8,.022,.05,M.cerIn);chan.position.set(0,.003,-bodyHL+.05);workG.add(chan);
+// ⑧ 給水ポート（後部-Z面）
+const rInletLY=-.03,sInletLY=-.11;
+const rInletPipe=mkCyl(.045,.045,.08,M.stMd);rInletPipe.rotation.x=Math.PI/2;rInletPipe.position.set(0,rInletLY,-bodyHL-.04);workG.add(rInletPipe);
+const rInletFlg=mkCyl(.065,.065,.030,M.stLt,12);rInletFlg.rotation.x=Math.PI/2;rInletFlg.position.set(0,rInletLY,-bodyHL);workG.add(rInletFlg);
+const sInletPipe=mkCyl(.038,.038,.07,M.stMd);sInletPipe.rotation.x=Math.PI/2;sInletPipe.position.set(0,sInletLY,-bodyHL-.035);workG.add(sInletPipe);
+const sInletFlg=mkCyl(.055,.055,.028,M.stLt,12);sInletFlg.rotation.x=Math.PI/2;sInletFlg.position.set(0,sInletLY,-bodyHL);workG.add(sInletFlg);
+// 上面給水ポート
+const tWatPipe=mkCyl(.036,.036,.06,M.stMd);tWatPipe.position.set(0,rHH2+.03,-bodyHL+rHD2/2);workG.add(tWatPipe);
+const tWatFlg=mkCyl(.052,.052,.025,M.stLt,12);tWatFlg.position.set(0,rHH2,-bodyHL+rHD2/2);workG.add(tWatFlg);
+// ⑨ 排水口
+const drainLY=-(flangeThk+bodyDepth-.04);
+const drainFlg=mkCyl(.11,.13,.055,M.ceramic);drainFlg.position.set(0,drainLY,.08);workG.add(drainFlg);
+const drainHole=mkCyl(.075,.075,.10,mat(0x060c16,.1,.9));drainHole.position.set(0,drainLY,.08);workG.add(drainHole);
+// ⑩ ワーク内給水表現（下部1/3を水色で塗る）
+const waterFillH=bodyDepth/3;  // ≈0.133
+const waterFillMat=new THREE.MeshStandardMaterial({color:0x0044aa,emissive:new THREE.Color(0x003388),metalness:.05,roughness:.10,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide});
+const waterFillShape=roundedRect(bodyHW-.02,bodyHL-.02,.04);
+const waterFillMesh=new THREE.Mesh(
+  new THREE.ExtrudeGeometry(waterFillShape,{depth:waterFillH,bevelEnabled:false}),waterFillMat);
+waterFillMesh.rotation.x=Math.PI/2;
+// 下端に揃える: body底=-(flangeThk+bodyDepth), 水位上面=底+waterFillH
+waterFillMesh.position.y=-(flangeThk+bodyDepth)+waterFillH;
+workG.add(waterFillMesh);
+// 水面プレート（上面視点から見える水色平面）
+const waterSurfaceMat=new THREE.MeshStandardMaterial({color:0x0055cc,emissive:new THREE.Color(0x0044aa),metalness:.05,roughness:.05,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide});
+const waterSurface=new THREE.Mesh(new THREE.ShapeGeometry(roundedRect(bodyHW-.025,bodyHL-.025,.04)),waterSurfaceMat);
+waterSurface.rotation.x=-Math.PI/2;
+waterSurface.position.y=-(flangeThk+bodyDepth)+waterFillH+.003;
+workG.add(waterSurface);
+// 配置
+const RAIL_TOP=STAGE_Y+RAIL_T/2;
+workG.position.set(0,RAIL_TOP,0);
+const WY=workG.position.y;  // ≈1.84
+
+// ── CONTACT POSITIONS & ROD GEOMETRY ──────────────────────────
+// ロッドオフセット（ローカル座標、グループが接触位置に固定）
+//   ext=0(引込) → rodG offset = ±stroke
+//   ext=1(延出) → rodG offset = 0（シール/パッドがワーク面に接触）
+const ROD_TOP_STROKE   = .80;
+const ROD_TWS_STROKE   = .75;
+const ROD_REAR_STROKE  = .80;
+const ROD_SWS_STROKE   = .70;
+const ROD_DRAIN_STROKE = .65;
+const ROD_STAMP_STROKE = .80;
+
+const WORK_REAR_Z  = -bodyHL;         // = -0.45
+const DRAIN_BTM_WY = WY+drainLY-.028; // 排水口底
+
+// グループ固定位置
+const TOP_PUSH_Y   = WY + 2.366;      // seal bottom at y-2.366 touches WY
+const REAR_PORT_WY = WY + rInletLY;   // ≈ 1.81
+const SWS_CYL_Y    = REAR_PORT_WY - .50; // ≈ 1.31
+const TWS_Z        = -bodyHL+rHD2/2;  // ≈ -0.37
+const TWS_CONT_Y   = WY+rHH2+1.877;  // seal tip at 1.877 touches housing top
+const REAR_CYL_Y   = REAR_PORT_WY;
+const REAR_PUSH_Z  = WORK_REAR_Z - 1.964; // = -2.414
+const SWS_PUSH_Z   = WORK_REAR_Z - 1.777; // = -2.227
+const DRAIN_PUSH_Y = DRAIN_BTM_WY - 1.00;
+const STAMP_Y      = SWS_CYL_Y - .83; // well below SWS
+const STAMP_Z      = -1.70;
+const STAMP_ANG    = Math.PI*40/180;   // 40° upward tilt
+
+// ── 上面シール (top seal) ──────────────────────────────────────
+const topCylG=new THREE.Group();scene.add(topCylG);
+// body
+const tcBrack=mkBox(.85,.09,.28,M.stDk);edge(tcBrack,0x88aacc,.40);topCylG.add(tcBrack);
+const tcBarrel=mkCyl(.135,.135,.92,M.cylBlu);tcBarrel.position.y=-.56;edge(tcBarrel,0x4477ff,.45);topCylG.add(tcBarrel);
+[.36,-1.02].forEach(y=>{const c=mkCyl(.155,.155,.042,M.stDk);c.position.y=y;topCylG.add(c);});
+[-.28,-.82].forEach(y=>{const f=mkCyl(.022,.022,.10,M.stLt);f.rotation.z=Math.PI/2;f.position.set(.135,y,0);topCylG.add(f);});
+// rod group (moves)
+const tcRodG=new THREE.Group();topCylG.add(tcRodG);
+const tcRod=mkCyl(.050,.050,1.12,M.cylRod);tcRod.position.y=-1.62;tcRodG.add(tcRod);
+const tcFJ=mkCyl(.068,.068,.12,M.stDk,12);tcFJ.position.y=-2.24;tcRodG.add(tcFJ);
+const tcPlate=mkBox(.52,.050,.28,M.stDk);tcPlate.position.y=-2.32;edge(tcPlate,0x88aacc,.50);tcRodG.add(tcPlate);
+const tcSeal=mkBox(.48,.028,.24,M.rubber);tcSeal.position.y=-2.352;tcRodG.add(tcSeal);
+tcRodG.position.y=ROD_TOP_STROKE; // start retracted
+topCylG.position.set(0,TOP_PUSH_Y,0);
+
+// ── 上面給水口シール (TWS) ─────────────────────────────────────
+const topWatCylG=new THREE.Group();scene.add(topWatCylG);
+const twBrack=mkBox(.48,.07,.48,M.stDk);twBrack.position.y=0;edge(twBrack,0xffcc44,.45);topWatCylG.add(twBrack);
+const twBarrel=mkCyl(.098,.098,.70,M.cylOra);twBarrel.position.y=-.45;edge(twBarrel,0xffaa22,.50);topWatCylG.add(twBarrel);
+[.25,-.80].forEach(y=>{const c=mkCyl(.115,.115,.036,M.stDk);c.position.y=y;topWatCylG.add(c);});
+[-.20,-.68].forEach(y=>{const f=mkCyl(.017,.017,.08,M.stLt);f.rotation.z=Math.PI/2;f.position.set(.098,y,0);topWatCylG.add(f);});
+const twRodG=new THREE.Group();topWatCylG.add(twRodG);
+const twRod=mkCyl(.038,.038,.88,M.cylRod);twRod.position.y=-1.28;twRodG.add(twRod);
+const twFJ=mkCyl(.052,.052,.09,M.stDk,12);twFJ.position.y=-1.78;twRodG.add(twFJ);
+const twPlate=mkBox(.34,.042,.34,M.stDk);twPlate.position.y=-1.84;edge(twPlate,0xffcc44,.50);twRodG.add(twPlate);
+const twSeal=mkBox(.30,.023,.30,M.rubber);twSeal.position.y=-1.865;twRodG.add(twSeal);
+twRodG.position.y=ROD_TWS_STROKE; // start retracted
+topWatCylG.position.set(0,TWS_CONT_Y,TWS_Z);
+
+// ── 後部シリンダ (rear) ────────────────────────────────────────
+const rearCylG=new THREE.Group();scene.add(rearCylG);
+const rcBrack=mkBox(.24,.44,.15,M.stDk);edge(rcBrack,0x88aacc,.40);rearCylG.add(rcBrack);
+const rcBarrel=mkCyl(.125,.125,.98,M.cylBlu);rcBarrel.rotation.x=Math.PI/2;rcBarrel.position.z=.59;edge(rcBarrel,0x4477ff,.45);rearCylG.add(rcBarrel);
+[.10,1.08].forEach(z=>{const c=mkCyl(.145,.145,.040,M.stDk);c.rotation.x=Math.PI/2;c.position.z=z;rearCylG.add(c);});
+const rcRodG=new THREE.Group();rearCylG.add(rcRodG);
+const rcRod=mkCyl(.046,.046,.68,M.cylRod);rcRod.rotation.x=Math.PI/2;rcRod.position.z=1.47;rcRodG.add(rcRod);
+const rcFJ=mkCyl(.060,.060,.10,M.stDk);rcFJ.rotation.x=Math.PI/2;rcFJ.position.z=1.86;rcRodG.add(rcFJ);
+const rcPad=mkBox(.46,.28,.048,M.stDk);rcPad.position.z=1.92;edge(rcPad,0x88aacc,.45);rcRodG.add(rcPad);
+const rcSeal=mkBox(.42,.24,.027,M.rubber);rcSeal.position.z=1.95;rcRodG.add(rcSeal);
+rcRodG.position.z=-ROD_REAR_STROKE; // start retracted
+rearCylG.position.set(0,REAR_CYL_Y,REAR_PUSH_Z);
+
+// ── 側面給水シリンダ (SWS) ────────────────────────────────────
+const swsCylG=new THREE.Group();scene.add(swsCylG);
+const swsBrack=mkBox(.22,.28,.13,M.stDk);edge(swsBrack,0xaaffaa,.45);swsCylG.add(swsBrack);
+const swsBarrel=mkCyl(.100,.100,.82,M.cylGrn);swsBarrel.rotation.x=Math.PI/2;swsBarrel.position.z=.51;edge(swsBarrel,0x44ff88,.50);swsCylG.add(swsBarrel);
+[.10,.92].forEach(z=>{const c=mkCyl(.118,.118,.036,M.stDk);c.rotation.x=Math.PI/2;c.position.z=z;swsCylG.add(c);});
+const swsRodG=new THREE.Group();swsCylG.add(swsRodG);
+const swsRod=mkCyl(.040,.040,.55,M.cylRod);swsRod.rotation.x=Math.PI/2;swsRod.position.z=1.40;swsRodG.add(swsRod);
+const swsFJ=mkCyl(.050,.050,.08,M.stDk);swsFJ.rotation.x=Math.PI/2;swsFJ.position.z=1.69;swsRodG.add(swsFJ);
+const swsPad=mkBox(.34,.20,.044,M.stDk);swsPad.position.z=1.74;edge(swsPad,0xaaffaa,.45);swsRodG.add(swsPad);
+const swsSeal=mkBox(.30,.16,.024,M.rubber);swsSeal.position.z=1.765;swsRodG.add(swsSeal);
+swsRodG.position.z=-ROD_SWS_STROKE; // start retracted
+swsCylG.position.set(0,SWS_CYL_Y,SWS_PUSH_Z);
+
+// ── 排水シールシリンダ (drain) ─────────────────────────────────
+const drainSealG=new THREE.Group();scene.add(drainSealG);
+const dsBrack=mkBox(.30,.12,.30,M.stDk);dsBrack.position.y=-.40;edge(dsBrack,0x88aacc,.38);drainSealG.add(dsBrack);
+const dsBarrel=mkCyl(.096,.096,.68,M.cylBlu);dsBarrel.position.y=0;edge(dsBarrel,0x4477ff,.45);drainSealG.add(dsBarrel);
+[-.34,.34].forEach(y=>{const c=mkCyl(.114,.114,.038,M.stDk);c.position.y=y;drainSealG.add(c);});
+[-.18,.18].forEach(y=>{const f=mkCyl(.020,.020,.07,M.stLt);f.rotation.z=Math.PI/2;f.position.set(.096,y,0);drainSealG.add(f);});
+const dsRodG=new THREE.Group();drainSealG.add(dsRodG);
+const dsRod=mkCyl(.038,.038,.55,M.cylRod);dsRod.position.y=.34+.275;dsRodG.add(dsRod);
+const dsFJ=mkCyl(.050,.050,.08,M.stDk);dsFJ.position.y=.34+.55+.04;dsRodG.add(dsFJ);
+const dsPad=mkCyl(.108,.108,.040,M.stDk);dsPad.position.y=.34+.55+.09;dsRodG.add(dsPad);
+const dsSeal=mkCyl(.092,.092,.026,M.rubber);dsSeal.position.y=.34+.55+.110;dsRodG.add(dsSeal);
+dsRodG.position.y=-ROD_DRAIN_STROKE; // start retracted
+drainSealG.position.set(0,DRAIN_PUSH_Y,.08);
+
+// ── 合格スタンプシリンダ (stamp) ──────────────────────────────
+// 配置：SWSの下方・-Z側、ロッド先端が40°上向きでワーク底部-Z角に接触
+const stampG=new THREE.Group();scene.add(stampG);
+const stBrack=mkBox(.20,.35,.14,M.stDk);edge(stBrack,0xffaaaa,.45);stampG.add(stBrack);
+const stBarrel=mkCyl(.078,.078,.90,M.cylRed);stBarrel.rotation.x=Math.PI/2;stBarrel.position.z=.55;edge(stBarrel,0xff4444,.50);stampG.add(stBarrel);
+[.10,1.00].forEach(z=>{const c=mkCyl(.092,.092,.028,M.stDk);c.rotation.x=Math.PI/2;c.position.z=z;stampG.add(c);});
+[.30,.80].forEach(z=>{const f=mkCyl(.016,.016,.07,M.stLt);f.rotation.y=Math.PI/2;f.position.set(.078,0,z);stampG.add(f);});
+const stRodG=new THREE.Group();stampG.add(stRodG);
+const stRod=mkCyl(.030,.030,.70,M.cylRod);stRod.rotation.x=Math.PI/2;stRod.position.z=1.35;stRodG.add(stRod);
+const stFJ=mkCyl(.040,.040,.065,M.stDk);stFJ.rotation.x=Math.PI/2;stFJ.position.z=1.73;stRodG.add(stFJ);
+// スタンプパッド（赤いゴム印）
+const stPad=mkCyl(.055,.055,.032,M.stampPad);stPad.rotation.x=Math.PI/2;stPad.position.z=1.785;stRodG.add(stPad);
+stRodG.position.z=-ROD_STAMP_STROKE; // start retracted
+stampG.rotation.x=-STAMP_ANG; // tilt 40° upward
+stampG.position.set(0,STAMP_Y,STAMP_Z);
+
+// ── 漏水検査管（右側面 縦長透明管） ────────────────────────────
+const GAUGE_X=FX+.22, GAUGE_Z=FZ*.50;  // 前面端までの半分の距離、前面側へ移動
+const GAUGE_BASE=.10, GAUGE_H=FH*.80, GAUGE_R=.12;
+const GAUGE_CY=GAUGE_BASE+GAUGE_H/2;
+
+// スタンド（円盤）
+const gStand=mkCyl(.20,.22,.06,M.stDk,24);gStand.position.set(GAUGE_X,GAUGE_BASE-.03,GAUGE_Z);edge(gStand,0x4488aa,.35);scene.add(gStand);
+// 外管（半透明＋輪郭ワイヤ）
+const gTube=mkCyl(GAUGE_R,GAUGE_R,GAUGE_H,gaugeGlassMat,32);gTube.position.set(GAUGE_X,GAUGE_CY,GAUGE_Z);scene.add(gTube);
+// ガラス管 外形枠のみ（上円・下円・左右縦線）
+(function(){
+  const bm=new THREE.LineBasicMaterial({color:0x000000});
+  // 上円・下円
+  [GAUGE_BASE, GAUGE_BASE+GAUGE_H].forEach(y=>{
+    const pts=[];for(let i=0;i<=48;i++){const a=i/48*Math.PI*2;pts.push(new THREE.Vector3(GAUGE_X+Math.cos(a)*GAUGE_R,y,GAUGE_Z+Math.sin(a)*GAUGE_R));}
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),bm));
+  });
+  // 左右縦線（X±R）
+  [GAUGE_X-GAUGE_R,GAUGE_X+GAUGE_R].forEach(x=>{
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,GAUGE_BASE,GAUGE_Z),new THREE.Vector3(x,GAUGE_BASE+GAUGE_H,GAUGE_Z)]),bm));
+  });
+})();
+// 上端キャップ
+const gCap=mkCyl(GAUGE_R+.01,GAUGE_R+.01,.04,M.stDk,24);gCap.position.set(GAUGE_X,GAUGE_BASE+GAUGE_H+.02,GAUGE_Z);edge(gCap,0x4488aa,.35);scene.add(gCap);
+// 水（内側）
+const leakWaterMesh=mkCyl(GAUGE_R-.018,GAUGE_R-.018,GAUGE_H,M.leakWat,32);
+leakWaterMesh.position.set(GAUGE_X,GAUGE_BASE,GAUGE_Z);
+leakWaterMesh.scale.y=.0001;scene.add(leakWaterMesh);
+// 目盛りマーク（25/50/75/100%）
+[.25,.50,.75,1.0].forEach(f=>{
+  const mark=mkBox(.04,.014,GAUGE_R*2+.04,M.stDk);
+  mark.position.set(GAUGE_X,GAUGE_BASE+GAUGE_H*f,GAUGE_Z);
+  scene.add(mark);
+});
+// 接続パイプ（ゲージ→フレーム方向）
+scene.add(mkTube([[GAUGE_X,GAUGE_BASE+.3,GAUGE_Z],[FX,.3,0],[FX*.8,.3,FZ*.5]],  .018,M.tubeCl));
+
+// ── 漏気検査容器（設備裏側-Z、SWS左横） ─────────────────────────
+const AIR_X=-0.55, AIR_Z=-2.05;
+const AIR_R=.18, AIR_H=AIR_R*4; // H:W=2:1  (H=0.72, D=W=0.36)
+const AIR_BASE=.10, AIR_CY=AIR_BASE+AIR_H/2;
+
+// 容器外周（半透明＋輪郭ワイヤ）
+const airTube=mkCyl(AIR_R,AIR_R,AIR_H,airGlassMat,32);airTube.position.set(AIR_X,AIR_CY,AIR_Z);scene.add(airTube);
+// 空気容器 外形枠のみ（上円・下円・左右縦線）
+(function(){
+  const bm=new THREE.LineBasicMaterial({color:0x000000});
+  [AIR_BASE, AIR_BASE+AIR_H].forEach(y=>{
+    const pts=[];for(let i=0;i<=48;i++){const a=i/48*Math.PI*2;pts.push(new THREE.Vector3(AIR_X+Math.cos(a)*AIR_R,y,AIR_Z+Math.sin(a)*AIR_R));}
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),bm));
+  });
+  [AIR_X-AIR_R,AIR_X+AIR_R].forEach(x=>{
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,AIR_BASE,AIR_Z),new THREE.Vector3(x,AIR_BASE+AIR_H,AIR_Z)]),bm));
+  });
+})();
+// 上下キャップ
+const airCapT=mkCyl(AIR_R+.01,AIR_R+.01,.04,M.stDk,24);airCapT.position.set(AIR_X,AIR_BASE+AIR_H+.02,AIR_Z);scene.add(airCapT);
+const airCapB=mkCyl(AIR_R+.01,AIR_R+.01,.04,M.stDk,24);airCapB.position.set(AIR_X,AIR_BASE-.02,AIR_Z);scene.add(airCapB);
+// ベース台
+const airBase=mkCyl(AIR_R+.04,AIR_R+.06,.06,M.stDk,24);airBase.position.set(AIR_X,AIR_BASE-.05,AIR_Z);edge(airBase,0x4488aa,.30);scene.add(airBase);
+// 水（内側）
+const airWaterMesh=mkCyl(AIR_R-.018,AIR_R-.018,AIR_H,M.airWat,32);
+airWaterMesh.position.set(AIR_X,AIR_BASE,AIR_Z);
+airWaterMesh.scale.y=.0001;scene.add(airWaterMesh);
+// 接続パイプ
+scene.add(mkTube([[AIR_X+.18,AIR_BASE+.1,AIR_Z],[-.3,SWS_CYL_Y,SWS_PUSH_Z+.5]],  .016,M.tubeCl));
+
+// ── チューブ配管 ──────────────────────────────────────────────
+scene.add(mkTube([[.16,5.1,0],[.30,4.8,0],[.45,4.0,-.4],[.45,3.2,-.8]],.014,M.tubeBlu));
+scene.add(mkTube([[-.16,5.1,0],[-.30,4.8,0],[-.45,4.0,-.4],[-.45,3.2,-.8]],.014,M.tubeBlu));
+scene.add(mkTube([[.14,5.1,TWS_Z],[.30,4.8,TWS_Z-.05],[.48,4.2,TWS_Z-.10]],.012,M.tubeCl));
+scene.add(mkTube([[0,REAR_CYL_Y,-3.8],[0,REAR_CYL_Y-.3,-3.2],[0,REAR_CYL_Y-.1,-2.6]],.014,M.tubeCl));
+scene.add(mkTube([[.2,SWS_CYL_Y,-3.7],[.2,SWS_CYL_Y+.2,-3.0],[.2,SWS_CYL_Y+.3,-2.4]],.014,M.tubeCl));
+scene.add(mkTube([[.2,DRAIN_PUSH_Y+.3,.08],[.35,.4,.3],[.5,.2,.6]],.012,M.tubeCl));
+scene.add(mkTube([[.12,STAMP_Y,STAMP_Z-.1],[.3,.4,-1.2],[.5,.2,-.8]],.010,M.tubeCl));
+
+// ── パーティクル ──────────────────────────────────────────────
+const particleG=new THREE.Group();scene.add(particleG);let particles=[];
+function spawnP(type){
+  if(particles.length>100)return;
+  const isW=(type==='water');
+  const g=new THREE.SphereGeometry(isW?.020:.026,6,6);
+  const mp=new THREE.MeshBasicMaterial({color:isW?0x55aaff:0xaaddff,transparent:true,opacity:isW?.75:.45,wireframe:!isW});
+  const p=new THREE.Mesh(g,mp);
+  p.position.set((Math.random()-.5)*.5,WY+.1+Math.random()*.4,(Math.random()-.5)*.4);
+  p.userData.vel=new THREE.Vector3((Math.random()-.5)*.012,isW?-.022:.018+Math.random()*.012,(Math.random()-.5)*.012);
+  p.userData.life=.9+Math.random()*.6;p.userData.maxLife=p.userData.life;
+  particleG.add(p);particles.push(p);
+}
+
+// ── STEP STATE ────────────────────────────────────────────────
+const STEP_DUR=3.2,TOTAL_STEPS=11;
+let currentStep=-1,stepTimer=0,playing=false,oneCycle=false;
+let curTopExt=0,curTwsExt=0,curRearExt=0,curSwsExt=0,curDrainExt=0,curStampExt=0;
+let curLeakFill=0,curAirFill=0,curWorkWater=0;
+
+function getTargets(s){
+  const R={top:0,tws:0,rear:0,sws:0,drain:0};
+  if(s<0)    return R;
+  if(s===0)  return{...R,top:.40};
+  if(s===1)  return{...R,top:.40,rear:1};
+  if(s===2)  return{...R,top:1,rear:1};
+  // STEP4: 選択した給水口シールのみ動作
+  if(s===3)  return{...R,top:1,tws:inletMode==='top'?1:0,rear:1,sws:inletMode==='side'?1:0,drain:1};
+  if(s===4)  return{...R,top:1,tws:inletMode==='top'?1:0,rear:1,sws:inletMode==='side'?1:0,drain:1}; // 漏水検査
+  // STEP6: 選択した給水口シールのみ戻り
+  if(s===5)  return{...R,top:1,rear:1,drain:1};              // 給水口シール戻り
+  if(s===6)  return{...R,top:1,rear:1};                      // drain戻り
+  if(s===7)  return{...R,top:1,rear:1,drain:1};              // 漏気検査（排水口シール出端）
+  if(s===8)  return{...R,top:1};                             // 排水口+後部シリンダ同時戻り
+  if(s===9)  return{...R,top:1};                             // stamp（上面シールは維持）
+  if(s===10) return R;                                       // top戻り
+  return R;
+}
+
+function updateUI(s){
+  document.querySelectorAll('.sl li').forEach((li,i)=>{li.classList.remove('active','done');if(i<s)li.classList.add('done');else if(i===s)li.classList.add('active');});
+  document.getElementById('pf').style.width=(s<0?0:((s+1)/TOTAL_STEPS*100))+'%';
+  if(s>=0&&s<TOTAL_STEPS){document.getElementById('snum').textContent=steps[s].n;document.getElementById('sdesc').textContent=steps[s].d;document.getElementById('si').textContent=`STEP ${s+1}/${TOTAL_STEPS}`;}
+  else{document.getElementById('snum').textContent='READY';document.getElementById('sdesc').textContent='初期状態';document.getElementById('si').textContent='STEP —';}
+}
+updateUI(-1);
+
+function togglePlay(){playing=!playing;oneCycle=false;
+  document.getElementById('bstart').textContent=playing?'⏸ 一時停止':'▶ 開始';
+  document.getElementById('bstart').classList.toggle('active',playing);}
+function startOneCycle(){if(currentStep>-1&&currentStep<TOTAL_STEPS-1)return;
+  playing=true;oneCycle=true;currentStep=-1;stepTimer=0;
+  document.getElementById('bstart').textContent='⏸ 一時停止';
+  document.getElementById('bstart').classList.add('active');}
+let inletMode='top'; // 'top' or 'side'
+function setInlet(mode,el){
+  inletMode=mode;
+  document.getElementById('isel-top').classList.toggle('active',mode==='top');
+  document.getElementById('isel-side').classList.toggle('active',mode==='side');
+}
+function stepOnce(){
+  playing=false;oneCycle=false;
+  document.getElementById('bstart').textContent='▶ 開始';
+  document.getElementById('bstart').classList.remove('active');
+  currentStep++;
+  if(currentStep>=TOTAL_STEPS)currentStep=-1;
+  stepTimer=0;
+  updateUI(currentStep);
+}
+function resetAll(){playing=false;oneCycle=false;currentStep=-1;stepTimer=0;
+  particles.forEach(p=>particleG.remove(p));particles=[];
+  document.getElementById('bstart').textContent='▶ 開始';
+  document.getElementById('bstart').classList.remove('active');
+  document.getElementById('tb').style.width='0%';updateUI(-1);}
+
+// ── RENDER LOOP ───────────────────────────────────────────────
+const clock=new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),.05);
+  const t=clock.getElapsedTime();
+
+  if(orb.animating){
+    orb.animT=Math.min(1,orb.animT+dt*2.0);
+    const e=orb.animT*orb.animT*(3-2*orb.animT);
+    ['theta','phi','radius'].forEach(k=>orb[k]=lerp(orb[k],orb.at[k],e*.07+.02));
+    ['x','y','z'].forEach(k=>orb.target[k]=lerp(orb.target[k],orb.at['t'+k],e*.07+.02));
+    applyOrb();if(orb.animT>=.99)orb.animating=false;
+  }
+
+  if(playing){
+    stepTimer+=dt;
+    document.getElementById('tb').style.width=(Math.min(stepTimer/STEP_DUR,1)*100)+'%';
+    if(stepTimer>=STEP_DUR){
+      stepTimer=0;currentStep++;
+      if(currentStep>=TOTAL_STEPS){
+        currentStep=-1;particles.forEach(p=>particleG.remove(p));particles=[];
+        if(oneCycle){playing=false;oneCycle=false;
+          document.getElementById('bstart').textContent='▶ 開始';
+          document.getElementById('bstart').classList.remove('active');
+          document.getElementById('tb').style.width='0%';}
+      }
+      updateUI(currentStep);
+    }
+  }
+
+  // ─ ロッド延出量制御（ext 0=引込 1=延出）
+  const tg=getTargets(currentStep);
+  const SPD=5.5;
+  const lf=1-Math.exp(-SPD*dt);
+  curTopExt   =lerp(curTopExt,   tg.top,   lf);
+  curTwsExt   =lerp(curTwsExt,   tg.tws,   lf);
+  curRearExt  =lerp(curRearExt,  tg.rear,  lf);
+  curSwsExt   =lerp(curSwsExt,   tg.sws,   lf);
+  curDrainExt =lerp(curDrainExt, tg.drain, lf);
+
+  // スタンプ：STEP10（排水口・後部戻り直後）で往復1回（半サイン波）
+  if(currentStep===9){
+    const ph=clamp(stepTimer/STEP_DUR,0,1);
+    curStampExt=Math.sin(Math.PI*ph);
+  }else{
+    curStampExt=lerp(curStampExt,0,lf);
+  }
+
+  // ─ ロッドグループ位置更新（グループ本体は固定、ロッドのみ移動）
+  tcRodG.position.y   = ROD_TOP_STROKE   * (1-curTopExt);   // +Y=引込
+  twRodG.position.y   = ROD_TWS_STROKE   * (1-curTwsExt);
+  rcRodG.position.z   =-ROD_REAR_STROKE  * (1-curRearExt);   // -Z=引込
+  swsRodG.position.z  =-ROD_SWS_STROKE   * (1-curSwsExt);
+  dsRodG.position.y   =-ROD_DRAIN_STROKE * (1-curDrainExt);  // -Y=引込
+  stRodG.position.z   =-ROD_STAMP_STROKE * (1-curStampExt);  // -Z=引込
+
+  // ─ ワーク内給水表現（STEP7=index6以降に水色表示、リセットで消去）
+  const waterTarget=(currentStep>=5&&currentStep<=10)?1:0;
+  curWorkWater=lerp(curWorkWater,waterTarget,1-Math.exp(-1.2*dt));
+  waterFillMat.opacity=curWorkWater*.95;
+  waterFillMat.emissive.setRGB(0,curWorkWater*.20,curWorkWater*.53);
+  waterSurfaceMat.opacity=curWorkWater*.98;
+  waterSurfaceMat.emissive.setRGB(0,curWorkWater*.27,curWorkWater*.67);
+  const isLeak=(currentStep===4),isAir=(currentStep===7);
+  const fillSpd=.40;
+  curLeakFill=lerp(curLeakFill,isLeak?.80:0,1-Math.exp(-fillSpd*dt));
+  curAirFill =lerp(curAirFill, isAir?.667:0,1-Math.exp(-fillSpd*dt));
+
+  const lf2=Math.max(.0001,curLeakFill);
+  leakWaterMesh.scale.y=lf2;
+  leakWaterMesh.position.y=GAUGE_BASE+GAUGE_H*lf2/2;
+
+  const af2=Math.max(.0001,curAirFill);
+  airWaterMesh.scale.y=af2;
+  airWaterMesh.position.y=AIR_BASE+AIR_H*af2/2;
+
+  // ─ 検査管点滅（水位メッシュの色で表現）
+  const blink=Math.floor(t*3)%2===0;
+  M.leakWat.color.setHex(isLeak?(blink?0x2266ff:0x1144cc):0x1144cc);
+  M.airWat.color.setHex(isAir?(blink?0x2266ee:0x1155bb):0x1155bb);
+
+  // ─ パーティクル削除（水泡動作を削除）
+  if(particles.length>0){particles.forEach(p=>particleG.remove(p));particles=[];}
+
+  renderer.render(scene,camera);
+}
+window.addEventListener('resize',()=>{camera.aspect=W()/H();camera.updateProjectionMatrix();renderer.setSize(W(),H());});
+setView('iso',document.getElementById('vi'));
+animate();
+</script>
+</body>
+</html>
