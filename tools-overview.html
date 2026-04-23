@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務効率化ツール 一覧 — Toolbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ─── ブルー系トークン（社内ポータル） ─── */
+  --navy-900: #0b2545;
+  --navy-800: #13315c;
+  --navy-700: #1d4e89;
+  --blue-600: #2563a6;
+  --blue-500: #3b82c4;
+  --blue-100: #dbe8f4;
+  --blue-50:  #eef4fb;
+  --blue-25:  #f6f9fd;
+
+  --ink-900: #111827;
+  --ink-700: #374151;
+  --ink-600: #4b5563;
+  --ink-500: #6b7280;
+  --ink-400: #9ca3af;
+
+  --line-strong: #c7d2e0;
+  --line: #dbe2ec;
+  --line-soft: #e8eef5;
+
+  --bg: #ffffff;
+  --bg-muted: #f3f6fa;
+
+  --cat-biz:    #1d4e89;  /* 業務自動化 */
+  --cat-chrome: #0f766e;  /* Chrome系 */
+  --cat-system: #7c3aed;  /* システム管理 */
+  --cat-file:   #b45309;  /* ファイル操作 */
+
+  --radius: 6px;
+  --sans: 'IBM Plex Sans JP', 'Noto Sans JP', -apple-system, 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'Menlo', monospace;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--bg-muted);
+  color: var(--ink-900);
+  font-family: var(--sans);
+  font-feature-settings: "palt";
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ─── ポータルヘッダー ─── */
+.portal-header {
+  background: var(--navy-900);
+  color: #fff;
+  border-bottom: 3px solid var(--blue-500);
+}
+.portal-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.portal-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.portal-logo .mark {
+  width: 28px; height: 28px;
+  border: 2px solid #fff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.portal-logo .name { font-size: 15px; }
+.portal-logo .sub {
+  color: var(--blue-100);
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: 0.08em;
+  margin-left: 4px;
+}
+.portal-crumbs {
+  font-size: 12px;
+  color: var(--blue-100);
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+}
+.portal-crumbs span { color: rgba(255,255,255,0.45); margin: 0 8px; }
+
+/* ─── ページヘッダー ─── */
+.page-head {
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+.page-head-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 32px 24px;
+}
+.page-kicker {
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: 0.14em;
+  color: var(--blue-600);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--navy-900);
+  margin-bottom: 6px;
+}
+.page-desc {
+  font-size: 13.5px;
+  color: var(--ink-600);
+  max-width: 800px;
+}
+.page-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+  font-size: 12px;
+  color: var(--ink-500);
+  flex-wrap: wrap;
+}
+.page-meta span b {
+  color: var(--ink-700);
+  font-weight: 600;
+  margin-left: 6px;
+  font-family: var(--mono);
+}
+
+/* ─── コンテナ ─── */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 32px 64px;
+}
+
+/* ─── 凡例 ─── */
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--ink-600);
+  align-items: center;
+}
+.legend-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-500);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.legend-chip::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  background: var(--c, var(--blue-500));
+}
+
+/* ═══════════════════════════════════════
+   案A: クラシック業務テーブル
+   ═══════════════════════════════════════ */
+.tbl-classic-wrap {
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(11,37,69,0.04);
+}
+table.tbl-classic {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.tbl-classic thead th {
+  background: var(--navy-800);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  padding: 10px 14px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+table.tbl-classic thead th:last-child { border-right: none; }
+table.tbl-classic thead th .th-sub {
+  display: block;
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 400;
+  color: var(--blue-100);
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+table.tbl-classic tbody td {
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+table.tbl-classic tbody td:last-child { border-right: none; }
+table.tbl-classic tbody tr:nth-child(even) td { background: var(--blue-25); }
+table.tbl-classic tbody tr:hover td { background: var(--blue-50); }
+
+.row-no {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-500);
+  text-align: center;
+  width: 56px;
+  font-weight: 500;
+}
+.cat-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 2px;
+  color: #fff;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.cat-tag[data-c="biz"]    { background: var(--cat-biz); }
+.cat-tag[data-c="chrome"] { background: var(--cat-chrome); }
+.cat-tag[data-c="system"] { background: var(--cat-system); }
+.cat-tag[data-c="file"]   { background: var(--cat-file); }
+
+.tool-name {
+  font-weight: 600;
+  color: var(--navy-900);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.tool-name-id {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-400);
+  font-weight: 400;
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+.target-col {
+  font-size: 12.5px;
+  color: var(--ink-700);
+  white-space: nowrap;
+}
+.target-col .target-dept {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-500);
+  margin-top: 2px;
+}
+.desc-col {
+  color: var(--ink-700);
+  line-height: 1.65;
+  font-size: 13px;
+}
+.warn {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #b45309;
+  background: #fef5e7;
+  border: 1px solid #f6dfb4;
+  padding: 1px 7px;
+  border-radius: 2px;
+}
+.link-col {
+  white-space: nowrap;
+  text-align: center;
+  width: 110px;
+}
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--blue-600);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  border-radius: 3px;
+  font-family: var(--sans);
+  transition: all 0.12s;
+}
+.link-btn:hover {
+  background: var(--blue-600);
+  color: #fff;
+  border-color: var(--blue-600);
+}
+.link-btn svg { width: 11px; height: 11px; }
+
+/* ─── 解説ボタン／展開行 ─── */
+.expl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--blue-600);
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  padding: 4px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.12s;
+}
+.expl-btn:hover {
+  background: var(--blue-600);
+  color: #fff;
+  border-color: var(--blue-600);
+}
+.expl-btn .chev {
+  width: 10px; height: 10px;
+  transition: transform 0.2s;
+}
+tr.is-open .expl-btn {
+  background: var(--blue-600);
+  color: #fff;
+  border-color: var(--blue-600);
+}
+tr.is-open .expl-btn .chev { transform: rotate(180deg); }
+
+tr.expl-row > td {
+  padding: 0 !important;
+  background: var(--blue-25) !important;
+  border-top: 1px solid var(--line) !important;
+}
+tr.expl-row.is-hidden { display: none; }
+.expl-body {
+  padding: 18px 22px 22px 70px;
+  border-left: 3px solid var(--blue-500);
+  background: linear-gradient(180deg, var(--blue-50) 0%, var(--blue-25) 100%);
+}
+.expl-title {
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  color: var(--blue-600);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.expl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+}
+@media (max-width: 900px) {
+  .expl-grid { grid-template-columns: 1fr; }
+  .expl-body { padding-left: 22px; }
+}
+.expl-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12.5px;
+  color: var(--ink-700);
+  line-height: 1.6;
+}
+.expl-item::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--blue-500);
+  margin-top: 8px;
+}
+.expl-item b {
+  color: var(--navy-800);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.expl-foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--ink-500);
+}
+.expl-foot .label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-500);
+  text-transform: uppercase;
+}
+.expl-foot a.detail-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--navy-800);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+.expl-foot a.detail-link:hover { background: var(--blue-600); }
+
+/* ═══════════════════════════════════════
+   案B: モダンライトテーブル
+   ═══════════════════════════════════════ */
+.tbl-modern-wrap {
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 4px;
+  box-shadow: 0 1px 3px rgba(11,37,69,0.04), 0 8px 32px rgba(11,37,69,0.04);
+}
+table.tbl-modern {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+table.tbl-modern thead th {
+  background: transparent;
+  color: var(--ink-500);
+  text-align: left;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+}
+table.tbl-modern tbody td {
+  padding: 18px 18px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+table.tbl-modern tbody tr:last-child td { border-bottom: none; }
+table.tbl-modern tbody tr { transition: background 0.12s; }
+table.tbl-modern tbody tr:hover td { background: var(--blue-25); }
+
+.tbl-modern .row-no {
+  color: var(--ink-400);
+  font-weight: 400;
+}
+.tbl-modern .cat-tag {
+  background: transparent !important;
+  color: var(--c-fg, var(--cat-biz));
+  border: 1px solid currentColor;
+  font-weight: 500;
+  opacity: 0.85;
+}
+.tbl-modern .cat-tag[data-c="biz"]    { --c-fg: var(--cat-biz); }
+.tbl-modern .cat-tag[data-c="chrome"] { --c-fg: var(--cat-chrome); }
+.tbl-modern .cat-tag[data-c="system"] { --c-fg: var(--cat-system); }
+.tbl-modern .cat-tag[data-c="file"]   { --c-fg: var(--cat-file); }
+
+.tbl-modern .tool-name { font-size: 14px; }
+.tbl-modern .desc-col { color: var(--ink-600); font-size: 13px; }
+
+.tbl-modern .link-btn {
+  border: none;
+  background: var(--blue-50);
+  color: var(--blue-600);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-weight: 500;
+}
+.tbl-modern .link-btn:hover {
+  background: var(--blue-600);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════
+   案C: カテゴリ区切り型
+   ═══════════════════════════════════════ */
+.cat-section { margin-bottom: 28px; }
+.cat-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 16px;
+  border-left: 4px solid var(--c, var(--cat-biz));
+  background: #fff;
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+.cat-head .cat-no {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-400);
+  letter-spacing: 0.1em;
+}
+.cat-head .cat-ttl {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c, var(--cat-biz));
+}
+.cat-head .cat-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-500);
+  margin-left: auto;
+}
+
+.cat-section table.tbl-cat {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: none;
+  font-size: 13px;
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+}
+table.tbl-cat thead th {
+  background: var(--blue-50);
+  color: var(--navy-800);
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.tbl-cat tbody td {
+  padding: 12px 14px;
+  border-top: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+table.tbl-cat tbody tr:first-child td { border-top: none; }
+table.tbl-cat tbody tr:hover td { background: var(--blue-25); }
+
+.cat-section[data-c="biz"]    { --c: var(--cat-biz); }
+.cat-section[data-c="chrome"] { --c: var(--cat-chrome); }
+.cat-section[data-c="system"] { --c: var(--cat-system); }
+.cat-section[data-c="file"]   { --c: var(--cat-file); }
+
+/* ─── モード切替でレイアウト制御 ─── */
+body[data-mode="a"] .view-b,
+body[data-mode="a"] .view-c { display: none; }
+body[data-mode="b"] .view-a,
+body[data-mode="b"] .view-c { display: none; }
+body[data-mode="c"] .view-a,
+body[data-mode="c"] .view-b { display: none; }
+
+/* ─── Tweaksパネル ─── */
+#tweaks {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 260px;
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  box-shadow: 0 10px 32px rgba(11,37,69,0.18);
+  padding: 16px;
+  font-size: 12.5px;
+  z-index: 100;
+  display: none;
+}
+#tweaks.visible { display: block; }
+#tweaks h4 {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--ink-500);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+#tweaks .opt {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: var(--bg-muted);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--ink-700);
+  transition: all 0.12s;
+}
+#tweaks .opt:hover { background: var(--blue-50); }
+#tweaks .opt.active {
+  background: var(--blue-50);
+  border-color: var(--blue-500);
+  color: var(--navy-800);
+  font-weight: 600;
+}
+#tweaks .opt .opt-ttl { display: block; font-size: 12.5px; }
+#tweaks .opt .opt-sub {
+  display: block;
+  font-size: 10.5px;
+  color: var(--ink-500);
+  font-family: var(--mono);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+
+/* ─── フッター ─── */
+footer {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 32px 32px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--ink-500);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--mono);
+}
+
+/* ─── 小画面 ─── */
+@media (max-width: 820px) {
+  .portal-header-inner, .page-head-inner, .container { padding-left: 16px; padding-right: 16px; }
+  table.tbl-classic, table.tbl-modern, table.tbl-cat { font-size: 12px; }
+  .target-col { white-space: normal; }
+  #tweaks { right: 12px; bottom: 12px; width: calc(100vw - 24px); max-width: 260px; }
+}
+</style>
+</head>
+<body data-mode="a">
+
+<!-- ─── ポータルヘッダー ─── -->
+<header class="portal-header" data-screen-label="portal-header">
+  <div class="portal-header-inner">
+    <div class="portal-logo">
+      <span class="mark">T</span>
+      <span class="name">Toolbox Portal</span>
+      <span class="sub">/ 業務効率化ツール</span>
+    </div>
+    <div class="portal-crumbs">
+      HOME <span>/</span> ツール <span>/</span> 一覧
+    </div>
+  </div>
+</header>
+
+<!-- ─── ページヘッダー ─── -->
+<div class="page-head">
+  <div class="page-head-inner">
+    <div class="page-kicker">Tools Overview</div>
+    <h1 class="page-title">業務効率化ツール 一覧</h1>
+    <p class="page-desc">
+      日々の定型業務を自動化・省力化するために社内公開している自作ツールの一覧です。
+      各ツールの実行方法・ダウンロード・詳細仕様は「詳細」リンクから個別ページをご参照ください。
+    </p>
+    <div class="page-meta">
+      <span>登録ツール数<b>11</b></span>
+      <span>カテゴリ<b>4</b></span>
+      <span>対応OS<b>Windows 10 / 11</b></span>
+      <span>最終更新<b>2026-04-20</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── 本体 ─── -->
+<main class="container">
+
+  <!-- 凡例 -->
+  <div class="legend">
+    <span class="legend-label">カテゴリ凡例</span>
+    <span class="legend-chip" style="--c:#1d4e89">業務自動化</span>
+    <span class="legend-chip" style="--c:#0f766e">Chrome系</span>
+    <span class="legend-chip" style="--c:#7c3aed">システム管理</span>
+    <span class="legend-chip" style="--c:#b45309">ファイル操作</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       案A：クラシック業務テーブル
+       ═══════════════════════════════════════ -->
+  <div class="view-a" data-screen-label="A クラシック業務テーブル">
+    <div class="tbl-classic-wrap">
+      <table class="tbl-classic">
+        <colgroup>
+          <col style="width:56px">
+          <col style="width:120px">
+          <col style="width:240px">
+          <col style="width:210px">
+          <col>
+          <col style="width:110px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>No.<span class="th-sub">#</span></th>
+            <th>カテゴリ<span class="th-sub">CATEGORY</span></th>
+            <th>ツール名<span class="th-sub">TOOL NAME</span></th>
+            <th>対象業務・部署<span class="th-sub">TARGET</span></th>
+            <th>概要・説明<span class="th-sub">DESCRIPTION</span></th>
+            <th>解説<span class="th-sub">INSIGHT</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-classic"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       案B：モダンライトテーブル
+       ═══════════════════════════════════════ -->
+  <div class="view-b" data-screen-label="B モダンライトテーブル">
+    <div class="tbl-modern-wrap">
+      <table class="tbl-modern">
+        <colgroup>
+          <col style="width:56px">
+          <col style="width:130px">
+          <col style="width:240px">
+          <col style="width:210px">
+          <col>
+          <col style="width:110px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Category</th>
+            <th>Tool</th>
+            <th>Target</th>
+            <th>Description</th>
+            <th>Insight</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-modern"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       案C：カテゴリ区切り型
+       ═══════════════════════════════════════ -->
+  <div class="view-c" data-screen-label="C カテゴリ区切り型">
+    <div id="cat-sections"></div>
+  </div>
+
+</main>
+
+<footer>
+  <span>© 2026 Toolbox Portal</span>
+  <span>INTERNAL USE ONLY / ver 1.0</span>
+</footer>
+
+<!-- Tweaks -->
+<div id="tweaks">
+  <h4>Tweaks — 表示バリエーション</h4>
+  <button class="opt active" data-mode="a">
+    <span class="opt-ttl">案A｜クラシック業務</span>
+    <span class="opt-sub">dense / striped / navy header</span>
+  </button>
+  <button class="opt" data-mode="b">
+    <span class="opt-ttl">案B｜モダンライト</span>
+    <span class="opt-sub">airy / minimal lines / saas-like</span>
+  </button>
+  <button class="opt" data-mode="c">
+    <span class="opt-ttl">案C｜カテゴリ区切り</span>
+    <span class="opt-sub">sectioned by category / color accents</span>
+  </button>
+</div>
+
+<script>
+// ─── データ ───
+const TOOLS = [
+  { no:'01', cat:'biz',    catLabel:'業務自動化', name:'カレンダー自動登録', id:'write_calender', target:'総務・人事 / 全社',
+    desc:'社内カレンダーの休日データを Google カレンダー・Outlook に一括登録。年度切替時の更新作業を省力化します。', href:'apps/write_calender_dist.zip',
+    cases:[
+      {t:'デバイス横断共有', d:'オンラインカレンダーの会社 PC、自宅 PC、スマホなどへの展開が可能。'},
+      {t:'自動反映', d:'社内カレンダーの会社休日をオンライン側に自動反映。手入力作業を削減します。'}
+    ]
+  },
+  { no:'02', cat:'biz',    catLabel:'業務自動化', name:'メッセージ表示（アラーム）', id:'simple_message', target:'業務部門 / 個人利用',
+    desc:'指定時刻にポップアップ通知。毎日／曜日／月次に対応し、タスクスケジューラへの自動登録も可能です。', href:'apps/simple_message.zip',
+    cases:[
+      {t:'定例作業の押さえ', d:'日次・週次の定例時刻に自動でポップアップ表示。'},
+      {t:'月次特定日に対応', d:'毎月 10 日、最終営業日等、特定日の作業（締め、申請等）を確実にリマインドできます。'},
+      {t:'タスク自動登録', d:'Windows タスクスケジューラへ GUI から一括登録。難しいスケジューラ設定が不要です。'},
+      {t:'席を外しても気づく', d:'予定時刻に大きくポップアップするため、小さなカレンダー通知より見逃さない。'}
+    ]
+  },
+  { no:'03', cat:'chrome', catLabel:'Chrome系', name:'ブラウザスターター', id:'chrome_opener_disp', target:'全部署 / PC起動時',
+    desc:'登録済みの業務URLをChromeで一括起動。スタートアップ登録に対応し、始業時の立ち上げを効率化します。',
+    warn:'Microsoft Edge 非対応', href:'apps/chrome_opener_disp.zip',
+    cases:[
+      {t:'始業時の一気立ち上げ', d:'グループウェア・勤怠・メールWeb版など 5～10 個のタブを 1 クリックで開きます。'},
+      {t:'PC起動時自動実行', d:'スタートアップへ登録でき、PC 起動時に自動で業務ページが準備されます。'}
+    ]
+  },
+  { no:'04', cat:'chrome', catLabel:'Chrome系', name:'起動ブラウザ設定', id:'chrome_opener_set', target:'情報システム / 管理者',
+    desc:'起動URLの追加・編集・削除ができる GUI 管理ツール。設定は JSON で保存・配布可能です。',
+    warn:'Microsoft Edge 非対応', href:'apps/chrome_opener_set.zip',
+    cases:[
+      {t:'ノンコーディングの設定変更', d:'テキストエディタで JSON を直接編集する必要がなく、誘導形式で安全に追加・更新。'},
+      {t:'設定容易', d:'希望のURLをコピペするだけで起動登録が可能。'}
+    ]
+  },
+  { no:'05', cat:'system', catLabel:'システム管理', name:'メニューランチャー', id:'MenuBox', target:'全部署 / 共通',
+    desc:'アプリ・バッチ・Webサイトを一元管理するカスタマイズ可能なメニューボード。チームごとに異なる構成を配布できます。', href:'apps/MenuBox.zip',
+    cases:[
+      {t:'デスクトップ整理', d:'ショートカットやフォルダが雑然としなくなり、1 つのランチャーから全てに到達できます。'},
+      {t:'簡単操作', d:'「このボタンを押すだけ」で業務システムに到達できるため、アプリを探す時間が不要です。'},
+      {t:'多用途対応', d:'よく使う文書アプリ、実行アプリをカテゴリ別に配置可能。'}
+    ]
+  },
+  { no:'06', cat:'system', catLabel:'システム管理', name:'スタートアップ登録', id:'task_scheduler', target:'情報システム / 管理者',
+    desc:'EXE・スクリプト・バッチをスタートアップへ自動登録。タスクスケジューラの GUI 設定を簡略化します。', href:'apps/task_scheduler.zip',
+    cases:[
+      {t:'登録作業の封鎖', d:'タスクスケジューラの複雑な画面操作を避け、ファイルを選ぶだけで登録できます。'},
+      {t:'日次・月次の長期実行', d:'ログ取得やバックアップなど、人を介さない定期実行を安定化。'}
+    ]
+  },
+  { no:'07', cat:'system', catLabel:'システム管理', name:'プロセス再起動', id:'Reboot', target:'情報システム / 運用',
+    desc:'稼働中プロセスを並列処理で高速に全終了後、再起動。定期メンテや不具合時の復旧作業を効率化します。', href:'apps/Reboot.zip',
+    cases:[
+      {t:'動作不安定時のリフレッシュ', d:'メモリがみっしりした時・重くなった時に 1 クリックで再起動。再起動待ちが不要です。'},
+      {t:'並列終了で高速', d:'10 個以上のアプリを 1～2 秒で一斉終了。タスクマネージャーで一つずつ閉じる手間を削減します。'}
+    ]
+  },
+  { no:'08', cat:'system', catLabel:'システム管理', name:'全プロセス終了', id:'ProcessAllDown', target:'全部署 / 終業時',
+    desc:'稼働中の全プロセスを終了後、システムを安全にシャットダウン。終業時の締め作業を一括化します。', href:'apps/ProcessAllDown_dist.zip',
+    cases:[
+      {t:'終業時の一括シャットダウン', d:'開きっぱなしの資料やアプリを 1 クリックで全て終了して電源オフまで実行。'},
+      {t:'保存忘れの事故防止', d:'未保存ファイルがあるアプリは警告を表示し、データ消失のリスクを抑制。'}
+    ]
+  },
+  { no:'09', cat:'system', catLabel:'システム管理', name:'ファイル一括起動', id:'FileOpenAll', target:'全部署 / 業務開始時',
+    desc:'指定フォルダ内のファイル・アプリを一括起動。朝礼資料や定型レポートの同時立ち上げに最適です。',
+    warn:'一部のアプリに制限あり', href:'apps/FileOpenAll_dist.zip',
+    cases:[
+      {t:'まとめて起動', d:'業務進行中のファイル、アプリを登録しておくと、1クリックでまとめて開展。'},
+      {t:'担当ごとのセット管理', d:'フォルダを分けるだけで「会計用」「営業用」など用途別のセットが作れます。'}
+    ]
+  },
+  { no:'10', cat:'file',   catLabel:'ファイル操作', name:'ダウンロード一括削除', id:'download_delete', target:'全部署 / 個人利用',
+    desc:'ダウンロードフォルダ内の全ファイル・フォルダを一括クリア。ディスク容量管理と情報漏洩対策に。', href:'apps/download_delete.zip',
+    cases:[
+      {t:'ディスク容量の確保', d:'一時ファイルや機密資料のダウンロード残骸を一括削除し、PC 資源を綺麗に保てます。'},
+      {t:'情報漏洩リスクの低減', d:'ダウンロードフォルダに個人情報・機密ファイルが残り続ける状態を防止。'},
+      {t:'終業時・週次運用', d:'スタートアップと組み合わせれば、毎日・毎週の終業整理を自動化できます。'}
+    ]
+  },
+  { no:'11', cat:'file',   catLabel:'ファイル操作', name:'スクリーンショット貼付', id:'paist', target:'業務部門 / 資料作成',
+    desc:'スクリーンショットを Web UI 上で選択してクリップボードへ自動コピー。資料作成の反復操作を削減します。', href:'apps/paist.zip',
+    cases:[
+      {t:'資料作成の高速化', d:'エディタを開く→操作画面のキャプチャを 1 クリックで実現する。'},
+      {t:'複数画面の一括処理', d:'複数のスクリーンショットを一覧から必要なものだけサムネイルで選択して貼付。'}
+    ]
+  },
+];
+
+const CATS = [
+  { key:'biz',    no:'01', label:'業務自動化',   sub:'Business Automation' },
+  { key:'chrome', no:'02', label:'Chrome系',     sub:'Chrome Utilities' },
+  { key:'system', no:'03', label:'システム管理', sub:'System Management' },
+  { key:'file',   no:'04', label:'ファイル操作', sub:'File Operations' },
+];
+
+// ─── アイコン ───
+const extIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+// ─── 解説ボディ ───
+const chevIcon = `<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+function explHTML(t, cols) {
+  const cases = (t.cases || []).map(c => `
+    <div class="expl-item"><span><b>${c.t}：</b>${c.d}</span></div>
+  `).join('');
+  return `
+    <tr class="expl-row is-hidden" data-expl-for="${t.id}">
+      <td colspan="${cols}">
+        <div class="expl-body">
+          <div class="expl-title">導入事例・効果 / Use Cases</div>
+          <div class="expl-grid">${cases}</div>
+          <div class="expl-foot">
+            <span class="label">対象</span><span>${t.target}</span>
+            ${t.warn ? `<span class="label">注意</span><span style="color:#b45309">${t.warn}</span>` : ''}
+            <a class="detail-link" href="${t.href}" download>ZIP ダウンロード ${extIcon}</a>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+// ─── 行描画（A/B 共通） ───
+function rowHTML(t) {
+  return `
+    <tr data-cat="${t.cat}" data-tool="${t.id}">
+      <td class="row-no">${t.no}</td>
+      <td><span class="cat-tag" data-c="${t.cat}">${t.catLabel}</span></td>
+      <td>
+        <div class="tool-name">${t.name}</div>
+        <span class="tool-name-id">${t.id}</span>
+      </td>
+      <td class="target-col">${t.target}</td>
+      <td class="desc-col">
+        ${t.desc}
+        ${t.warn ? `<div><span class="warn">⚠ ${t.warn}</span></div>` : ''}
+      </td>
+      <td class="link-col">
+        <button class="expl-btn" data-toggle="${t.id}">解説 ${chevIcon}</button>
+      </td>
+    </tr>
+    ${explHTML(t, 6)}
+  `;
+}
+
+// ─── カテゴリ区切り型の行（No・カテゴリ列を省略） ───
+function rowHTMLcat(t) {
+  return `
+    <tr data-tool="${t.id}">
+      <td class="row-no">${t.no}</td>
+      <td>
+        <div class="tool-name">${t.name}</div>
+        <span class="tool-name-id">${t.id}</span>
+      </td>
+      <td class="target-col">${t.target}</td>
+      <td class="desc-col">
+        ${t.desc}
+        ${t.warn ? `<div><span class="warn">⚠ ${t.warn}</span></div>` : ''}
+      </td>
+      <td class="link-col">
+        <button class="expl-btn" data-toggle="${t.id}">解説 ${chevIcon}</button>
+      </td>
+    </tr>
+    ${explHTML(t, 5)}
+  `;
+}
+
+// ─── 描画 ───
+document.getElementById('tbody-classic').innerHTML = TOOLS.map(rowHTML).join('');
+document.getElementById('tbody-modern').innerHTML  = TOOLS.map(rowHTML).join('');
+
+const catWrap = document.getElementById('cat-sections');
+catWrap.innerHTML = CATS.map(c => {
+  const items = TOOLS.filter(t => t.cat === c.key);
+  return `
+    <section class="cat-section" data-c="${c.key}">
+      <div class="cat-head">
+        <span class="cat-no">CAT.${c.no}</span>
+        <span class="cat-ttl">${c.label}</span>
+        <span class="cat-count">${items.length} tools</span>
+      </div>
+      <table class="tbl-cat">
+        <colgroup>
+          <col style="width:56px">
+          <col style="width:240px">
+          <col style="width:210px">
+          <col>
+          <col style="width:110px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>ツール名</th>
+            <th>対象業務・部署</th>
+            <th>概要・説明</th>
+            <th>詳細・解説</th>
+          </tr>
+        </thead>
+        <tbody>${items.map(rowHTMLcat).join('')}</tbody>
+      </table>
+    </section>
+  `;
+}).join('');
+
+// ─── 解説トグル（イベント委譲） ───
+function toggleExpl(id) {
+  document.querySelectorAll(`tr.expl-row[data-expl-for="${id}"]`).forEach(row => {
+    row.classList.toggle('is-hidden');
+  });
+  document.querySelectorAll(`tr[data-tool="${id}"]`).forEach(row => {
+    row.classList.toggle('is-open');
+  });
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-toggle]');
+  if (!btn) return;
+  toggleExpl(btn.dataset.toggle);
+});
+
+// ─── Tweaks 連携 ───
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "mode": "a"
+}/*EDITMODE-END*/;
+
+function applyMode(m) {
+  document.body.dataset.mode = m;
+  document.querySelectorAll('#tweaks .opt').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === m);
+  });
+  try { localStorage.setItem('tools_overview_mode', m); } catch(e) {}
+}
+
+// 初期モード
+const saved = (() => { try { return localStorage.getItem('tools_overview_mode'); } catch(e) { return null; } })();
+applyMode(saved || TWEAK_DEFAULTS.mode || 'a');
+
+// 選択ハンドラ
+document.querySelectorAll('#tweaks .opt').forEach(b => {
+  b.addEventListener('click', () => {
+    const m = b.dataset.mode;
+    applyMode(m);
+    try {
+      window.parent.postMessage({type:'__edit_mode_set_keys', edits:{mode: m}}, '*');
+    } catch(e) {}
+  });
+});
+
+// ─── 編集モードの有効化 ───
+window.addEventListener('message', (e) => {
+  if (!e.data) return;
+  if (e.data.type === '__activate_edit_mode')   document.getElementById('tweaks').classList.add('visible');
+  if (e.data.type === '__deactivate_edit_mode') document.getElementById('tweaks').classList.remove('visible');
+});
+try { window.parent.postMessage({type:'__edit_mode_available'}, '*'); } catch(e) {}
+</script>
+</body>
+</html>

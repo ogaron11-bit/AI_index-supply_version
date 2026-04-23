@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生成AI活用事例</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #f5804a;
+      --coral: #e8603a;
+      --teal: #5a8a8a;
+      --slate: #6a8090;
+      --dark: #2a3a44;
+      --white: #ffffff;
+      --text-light: rgba(255,255,255,0.92);
+      --text-dim: rgba(255,255,255,0.72);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #1a2a34;
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(240,110,50,0.85) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 70% at 80% 70%, rgba(70,120,130,0.8) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 50% 100%, rgba(40,70,90,0.9) 0%, transparent 60%),
+        linear-gradient(160deg, #c85a20 0%, #8aacb0 50%, #2a4a5a 100%);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; padding: 2rem; }
+
+    .hero-subtitle {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: clamp(0.75rem, 2vw, 0.9rem);
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--white);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.3);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.4s forwards;
+    }
+
+    .hero-title span {
+      display: block;
+      font-size: clamp(2.2rem, 8vw, 5.5rem);
+    }
+
+    .hero-divider {
+      width: 60px;
+      height: 2px;
+      background: rgba(255,255,255,0.4);
+      margin: 2.5rem auto;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .btn-learn {
+      display: inline-block;
+      padding: 0.85rem 3rem;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.08);
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+
+    .btn-learn:hover {
+      background: rgba(255,255,255,0.22);
+      border-color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+    }
+
+    .scroll-hint span {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.5));
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      padding: 5rem 2rem 1.5rem;
+      text-align: left;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label h2 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    /* ─── CARDS ─── */
+    .cases {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .case-card {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .case-card + .case-card { margin-top: 2px; }
+
+    .card-inner {
+      padding: 3.5rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .case-card:nth-child(1) {
+      background:
+        radial-gradient(ellipse 80% 80% at 10% 50%, rgba(220,90,30,0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 90% 30%, rgba(80,130,140,0.4) 0%, transparent 60%),
+        linear-gradient(135deg, #7a3a1a 0%, #4a6a7a 100%);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .case-card:nth-child(2) {
+      background:
+        radial-gradient(ellipse 70% 70% at 80% 60%, rgba(60,110,120,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 20% 30%, rgba(90,80,140,0.3) 0%, transparent 60%),
+        linear-gradient(135deg, #3a5a6a 0%, #2a4a5a 100%);
+    }
+
+    .case-card:nth-child(3) {
+      background:
+        radial-gradient(ellipse 70% 70% at 20% 60%, rgba(30,70,90,0.7) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 80% 30%, rgba(70,110,120,0.5) 0%, transparent 60%),
+        linear-gradient(135deg, #1e3a4a 0%, #2a5060 100%);
+    }
+
+    .case-card:nth-child(4) {
+      background:
+        radial-gradient(ellipse 70% 70% at 75% 50%, rgba(90,55,130,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 20% 30%, rgba(35,65,110,0.55) 0%, transparent 60%),
+        linear-gradient(135deg, #1e2e4e 0%, #2e1e4e 100%);
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* Decorative number */
+    .card-number {
+      position: absolute;
+      top: -0.5rem;
+      right: 2.5rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 8rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .card-star {
+      font-size: 1.2rem;
+      color: #f5b942;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .card-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.4rem;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 2px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+
+    .card-link-btn:hover {
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.7);
+      transform: translateY(-1px);
+    }
+
+    .card-link-btn svg {
+      width: 13px;
+      height: 13px;
+      opacity: 0.8;
+    }
+
+    /* Info grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .info-item {
+      padding: 1.2rem 0 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .info-item:nth-child(odd) { padding-right: 2rem; border-right: 1px solid rgba(255,255,255,0.08); }
+    .info-item:nth-child(even) { padding-left: 2rem; }
+    .info-item:nth-last-child(-n+2) { border-bottom: none; }
+
+    .info-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      font-size: clamp(0.78rem, 2vw, 0.88rem);
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--text-light);
+    }
+
+    .info-value .note {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.3rem;
+    }
+
+    .info-value .indent { display: block; padding-left: 1em; }
+
+    /* Full-width info item */
+    .info-item.full {
+      grid-column: 1 / -1;
+      padding-right: 0;
+      border-right: none;
+    }
+
+    /* Caution tag */
+    .caution-tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: rgba(245,130,50,0.25);
+      border: 1px solid rgba(245,130,50,0.4);
+      border-radius: 2px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #f5b07a;
+      margin-bottom: 0.6rem;
+    }
+
+    /* ─── AI CLOSE SECTION ─── */
+    .ai-close {
+      max-width: 1100px;
+      margin: 4rem auto 0;
+      padding: 0 2rem 6rem;
+    }
+
+    .ai-close-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .ai-close-heading {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .ai-close-heading .star { color: #f5b942; font-size: 1.1rem; }
+
+    .ai-blocks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .ai-block {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 4px;
+      padding: 1.8rem 2rem;
+      transition: background 0.25s;
+    }
+
+    .ai-block:hover { background: rgba(255,255,255,0.08); }
+
+    .ai-block.wide { grid-column: 1 / -1; }
+
+    .ai-block-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ai-block-title::before {
+      content: '■';
+      color: rgba(245,180,70,0.6);
+      font-size: 0.6rem;
+    }
+
+    .ai-block-text {
+      font-size: clamp(0.8rem, 2vw, 0.88rem);
+      font-weight: 300;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .ai-block-text .paren {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.82em;
+    }
+
+    .ai-cta {
+      margin-top: 2rem;
+      padding: 2rem 2.5rem;
+      background: linear-gradient(135deg, rgba(245,130,50,0.15) 0%, rgba(70,120,130,0.15) 100%);
+      border: 1px solid rgba(245,180,70,0.25);
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .ai-cta p {
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+      font-weight: 300;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .ai-cta strong {
+      color: #f5c060;
+      font-weight: 500;
+    }
+
+    @media (max-width: 680px) {
+      .ai-blocks { grid-template-columns: 1fr; }
+      .ai-block.wide { grid-column: 1; }
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-section {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .contact-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .contact-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .contact-heading {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-heading .star { color: #f5b942; font-size: 1rem; }
+
+    .contact-text {
+      font-size: clamp(0.82rem, 2vw, 0.92rem);
+      font-weight: 300;
+      line-height: 2;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2.5rem;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.07);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    .contact-btn svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.8;
+    }
+
+    .contact-btn:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.15em;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50%       { opacity: 0.8; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 680px) {
+      .info-grid { grid-template-columns: 1fr; }
+      .info-item:nth-child(odd) { padding-right: 0; border-right: none; }
+      .info-item:nth-child(even) { padding-left: 0; }
+      .info-item:nth-last-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .info-item:last-child { border-bottom: none; }
+      .card-inner { padding: 2.5rem 1.5rem; }
+      .card-header { flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="top">
+  <div class="hero-content">
+    <p class="hero-subtitle">Generative AI · Use Cases</p>
+    <h1 class="hero-title">
+      生成AI
+      <span>活用事例</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <a href="#cases" class="btn-learn">LEARN MORE</a>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ══════════ SECTION LABEL ══════════ -->
+<div class="section-label" id="cases">
+  <h2>事例集</h2>
+</div>
+
+<!-- ══════════ CASE CARDS ══════════ -->
+<div class="cases">
+
+  <!-- CARD 1: 3D画像製作 -->
+  <article class="case-card">
+    <div class="card-number">01</div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-star">★</span>
+        <h3 class="card-title">3D画像製作</h3>
+        <a class="card-link-btn"
+           href="p2.html"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          参考例
+        </a>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">利用データ</div>
+          <div class="info-value">機械図面、写真、要求仕様、動作内容、その他構造物の定義</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">成果物</div>
+          <div class="info-value">3Dモデル<br><span class="note">（詳細はファイル参照）</span></div>
+        </div>
+        <div class="info-item full">
+          <div class="caution-tag">備考</div>
+          <div class="info-value">
+            画像データはトークン消費量が多いため制限基準がシビア<br>
+            <span class="indent">・ 無料ユーザー：消費に伴いリセット制限期間（間隔）が長い</span>
+            <span class="indent">・ 有料ユーザー：トークン利用枠が多く、リセット制限が短い（契約プランによる）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- CARD 2: ドキュメント作成 -->
+  <article class="case-card">
+    <div class="card-number">02</div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-star">★</span>
+        <h3 class="card-title">ドキュメント作成</h3>
+        <a class="card-link-btn"
+           href="p3.pdf"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          参考例
+        </a>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">利用データ</div>
+          <div class="info-value">テーマ、参考、手法などのプロンプト指示、または各生成AI独自の定義情報を設定</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">成果物</div>
+          <div class="info-value">PDF（OCR含む場合あり）<br>PowerPoint、その他</div>
+        </div>
+        <div class="info-item full">
+          <div class="caution-tag">備考</div>
+          <div class="info-value">
+            画像データに比べトークン消費量少なく、無料枠でカバー可能（現在）<br>
+            成果物は生成AIまたは指示内容に依存する
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- CARD 3: ワークフロー自動化 -->
+  <article class="case-card">
+    <div class="card-number">03</div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-star">★</span>
+        <h3 class="card-title">ワークフロー自動化・効率化 ／ Web作成等</h3>
+        <a class="card-link-btn"
+           href="p4.html"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          参考例
+        </a>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">利用データ</div>
+          <div class="info-value">コーディングによる製作または自然言語による対話</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">成果物</div>
+          <div class="info-value">
+            ワークフローの自動化<br>
+            Web<br>
+            アプリ開発<br>
+            実行タスク開発
+          </div>
+        </div>
+        <div class="info-item full">
+          <div class="caution-tag">備考</div>
+          <div class="info-value">
+            プログラミング知識、生成AIの特徴（設定・使用法など）、ターミナル取扱いなど、他に比べ難易度が高い<br>
+            トークン消費量が大のため、製作対象により無料枠では対応不可。また、有料枠独自の機能があり、有料が必須<br>
+            生成AIにより得意分野が分かれていることがあり、成果対象によっては適切に選定する必要がある
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+
+  <!-- CARD 4: 便利な使い方例 -->
+  <article class="case-card">
+    <div class="card-number">04</div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-star">★</span>
+        <h3 class="card-title">便利な使い方例</h3>
+        <a class="card-link-btn"
+           href="p5.html"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          参考例
+        </a>
+      </div>
+      <div class="info-grid">
+        <div class="info-item full">
+          <div class="info-label">概要</div>
+          <div class="info-value">
+            現在、生成AIは百花繚乱ある中でこれまで数十種のものを試してきました。その中から、無料枠でも高機能・実用的なものがあります。これらを使用して日常で仕事・プライベート問わず、便利な使い方を紹介します。<br>
+            <span class="note">※分からない用語はAIチャットを積極活用して調べてください。「もっとわかりやすく教えて」「小中学生にもわかるように説明して」など、納得できるまで聞いて大丈夫です。</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">活用例①</div>
+          <div class="info-value">
+            <strong style="color:var(--white);">スケジュール管理（カレンダー）</strong><br>
+            Googleアカウントを個人用・仕事用で作成し、Googleカレンダーで一元管理。生成AIと連携しておくことで、ワンフレーズの指示だけで予定を自動入力できます。スマホ・自宅PC・会社PCで同じカレンダーがリアルタイムに同期されます。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">活用例②</div>
+          <div class="info-value">
+            <strong style="color:var(--white);">メール返信文の下書き作成</strong><br>
+            相手先に応じた文体・敬語レベルをAIに事前設定。「メール返信」と打つだけで、受信文に沿った下書き全文をAIが自動生成します。社内・社外・初回・継続取引先など場面ごとに適切な表現で対応します。<br>
+            <span class="note">設計基準の詳細は「参考例」で確認できます。</span>
+          </div>
+        </div>
+        <div class="info-item full">
+          <div class="caution-tag">備考</div>
+          <div class="info-value">
+            上記２件はほんの一例です。まだまだ多くの便利な利用法があります。生成AIの得意分野と自分の業務を照らし合わせながら、使えそうな場面を積極的に探してみてください。
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</div><!-- /cases -->
+
+<!-- ══════════ AI を身近に ══════════ -->
+<section class="ai-close">
+  <p class="ai-close-label">Column · Generative AI Today</p>
+  <h2 class="ai-close-heading"><span class="star">★</span> AIを身近に</h2>
+
+  <div class="ai-blocks">
+    <div class="ai-block">
+      <div class="ai-block-title">黎明期</div>
+      <p class="ai-block-text">
+        AIには４〜５年携わってきました。2024年頃までは主にチャットボットとしての活用、すなわち質問して回答を得るという使い方が主流でした。当時はハルシネーション（誤った情報の生成）も多く、補助的なツールという位置づけでした。
+      </p>
+    </div>
+    <div class="ai-block">
+      <div class="ai-block-title">社会への浸透</div>
+      <p class="ai-block-text">
+        数年前まではAIに対して嫌悪感や不信感を持つ方も少なくありませんでしたが、技術の進化とともに認知が広がり、今では小学生が日常的に使うほど身近な存在になりました。一般企業への導入も続々と始まり、急速に拡大しています。当初、普及した生成AIのひとつであるChatGPTについていえば、コーディングのデバッグ時に10回以上やり取りしても解決できないことが珍しくありませんでした<span class="paren">（GPT-3〜4初期の頃の話です）</span>。現在はその精度と実用性が格段に向上しています。
+      </p>
+    </div>
+    <div class="ai-block wide">
+      <div class="ai-block-title">AIエージェントの台頭</div>
+      <p class="ai-block-text">
+        2025年初頭から「AIエージェント」と呼ばれる新しい形態が急速に普及し始めました。これは「答える」から「タスクをこなす」への大きな転換です。<br><br>
+        具体的には、PC上のファイルを自動で読み取り、フォルダを作成して分類・整理する作業や、インターフェースの異なるアプリケーション間を連携させ、データの読み書きを自動実行するといった作業を、自然言語の指示だけで実現できるようになっています。また、チャット内容を判断し、AI自身が最適な技術を選別・適用して成果物を作成、提供することも可能になりました。<br>
+        <span class="paren">（現時点ではIT知識がある程度必要な場面もありますが、今後はより誰でも扱いやすくなっていくでしょう。）</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="ai-cta">
+    <div class="ai-block-title" style="justify-content:center; margin-bottom:1.2rem;">まずは触れてみることから</div>
+    <p>
+      今まで手作業で行ってきたルーチンワークやワークフローの多くが、AIによって代替できる時代になってきました。また、技術の革新が進んで、これまでできなかったこと、成果物の品質・精度は格段に向上しています。<br><br>
+      生成AIにはまだ知られていない活用方法が数多くあり、「自分には関係ない」と思っていた方でも、使ってみると意外な場面で役立つことが少なくありません。現在は無料枠でも十分に試せるサービスが揃っています。<br><br>
+      まだ使ったことのない方は気軽に触れるところから、すでに使っている方はもう一歩踏み込んで、ぜひ自分の業務に合った活用方法を探してみてください。<br><br>
+      まずは<strong>「こんなことまでできるの？」</strong> と実感することが、AIを身近にする第一歩です。
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section class="contact-section">
+  <div class="contact-inner">
+    <p class="contact-label">Contact · Inquiry</p>
+    <h2 class="contact-heading"><span class="star">★</span> お問い合わせ</h2>
+    <p class="contact-text">
+      生成AIに関するお問い合わせは、できるだけメールにてお願いします。<br>
+      紹介した事例の作成方法・手順など詳細についてもお気軽にどうぞ。<br>
+      知る範囲のことはお答えできます。
+    </p>
+    <a href="mailto:a.ogata@taiyo-inc.jp" class="contact-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <polyline points="2,4 12,13 22,4"/>
+      </svg>
+      メールで問い合わせる
+    </a>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 &nbsp;生成AI活用事例集 &nbsp;|&nbsp; (株)タイヨウ
+</footer>
+
+</body>
+</html>
