@@ -807,14 +807,14 @@ footer {
 // ─── データ ───
 const TOOLS = [
   { no:'01', cat:'biz',    catLabel:'業務自動化', name:'カレンダー自動登録', id:'write_calender', target:'総務・人事 / 全社',
-    desc:'社内カレンダーの休日データを Google カレンダー・Outlook に一括登録。年度切替時の更新作業を省力化します。', href:'apps/write_calender_dist.zip',
+    desc:'社内カレンダーの休日データを Google カレンダー・Outlook に一括登録。年度切替時の更新作業を省力化します。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/write_calender_dist.zip',
     cases:[
       {t:'デバイス横断共有', d:'オンラインカレンダーの会社 PC、自宅 PC、スマホなどへの展開が可能。'},
       {t:'自動反映', d:'社内カレンダーの会社休日をオンライン側に自動反映。手入力作業を削減します。'}
     ]
   },
   { no:'02', cat:'biz',    catLabel:'業務自動化', name:'メッセージ表示（アラーム）', id:'simple_message', target:'業務部門 / 個人利用',
-    desc:'指定時刻にポップアップ通知。毎日／曜日／月次に対応し、タスクスケジューラへの自動登録も可能です。', href:'apps/simple_message.zip',
+    desc:'指定時刻にポップアップ通知。毎日／曜日／月次に対応し、タスクスケジューラへの自動登録も可能です。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/simple_message.zip',
     cases:[
       {t:'定例作業の押さえ', d:'日次・週次の定例時刻に自動でポップアップ表示。'},
       {t:'月次特定日に対応', d:'毎月 10 日、最終営業日等、特定日の作業（締め、申請等）を確実にリマインドできます。'},
@@ -824,7 +824,7 @@ const TOOLS = [
   },
   { no:'03', cat:'chrome', catLabel:'Chrome系', name:'ブラウザスターター', id:'chrome_opener_disp', target:'全部署 / PC起動時',
     desc:'登録済みの業務URLをChromeで一括起動。スタートアップ登録に対応し、始業時の立ち上げを効率化します。',
-    warn:'Microsoft Edge 非対応', href:'apps/chrome_opener_disp.zip',
+    warn:'Microsoft Edge 非対応', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/chrome_opener_disp.zip',
     cases:[
       {t:'始業時の一気立ち上げ', d:'グループウェア・勤怠・メールWeb版など 5～10 個のタブを 1 クリックで開きます。'},
       {t:'PC起動時自動実行', d:'スタートアップへ登録でき、PC 起動時に自動で業務ページが準備されます。'}
@@ -832,14 +832,14 @@ const TOOLS = [
   },
   { no:'04', cat:'chrome', catLabel:'Chrome系', name:'起動ブラウザ設定', id:'chrome_opener_set', target:'情報システム / 管理者',
     desc:'起動URLの追加・編集・削除ができる GUI 管理ツール。設定は JSON で保存・配布可能です。',
-    warn:'Microsoft Edge 非対応', href:'apps/chrome_opener_set.zip',
+    warn:'Microsoft Edge 非対応', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/chrome_opener_set.zip',
     cases:[
       {t:'ノンコーディングの設定変更', d:'テキストエディタで JSON を直接編集する必要がなく、誘導形式で安全に追加・更新。'},
       {t:'設定容易', d:'希望のURLをコピペするだけで起動登録が可能。'}
     ]
   },
   { no:'05', cat:'system', catLabel:'システム管理', name:'メニューランチャー', id:'MenuBox', target:'全部署 / 共通',
-    desc:'アプリ・バッチ・Webサイトを一元管理するカスタマイズ可能なメニューボード。チームごとに異なる構成を配布できます。', href:'apps/MenuBox.zip',
+    desc:'アプリ・バッチ・Webサイトを一元管理するカスタマイズ可能なメニューボード。チームごとに異なる構成を配布できます。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/MenuBox.zip',
     cases:[
       {t:'デスクトップ整理', d:'ショートカットやフォルダが雑然としなくなり、1 つのランチャーから全てに到達できます。'},
       {t:'簡単操作', d:'「このボタンを押すだけ」で業務システムに到達できるため、アプリを探す時間が不要です。'},
@@ -847,21 +847,21 @@ const TOOLS = [
     ]
   },
   { no:'06', cat:'system', catLabel:'システム管理', name:'スタートアップ登録', id:'task_scheduler', target:'情報システム / 管理者',
-    desc:'EXE・スクリプト・バッチをスタートアップへ自動登録。タスクスケジューラの GUI 設定を簡略化します。', href:'apps/task_scheduler.zip',
+    desc:'EXE・スクリプト・バッチをスタートアップへ自動登録。タスクスケジューラの GUI 設定を簡略化します。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/task_scheduler.zip',
     cases:[
       {t:'登録作業の封鎖', d:'タスクスケジューラの複雑な画面操作を避け、ファイルを選ぶだけで登録できます。'},
       {t:'日次・月次の長期実行', d:'ログ取得やバックアップなど、人を介さない定期実行を安定化。'}
     ]
   },
   { no:'07', cat:'system', catLabel:'システム管理', name:'プロセス再起動', id:'Reboot', target:'情報システム / 運用',
-    desc:'稼働中プロセスを並列処理で高速に全終了後、再起動。定期メンテや不具合時の復旧作業を効率化します。', href:'apps/Reboot.zip',
+    desc:'稼働中プロセスを並列処理で高速に全終了後、再起動。定期メンテや不具合時の復旧作業を効率化します。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/Reboot.zip',
     cases:[
       {t:'動作不安定時のリフレッシュ', d:'メモリがみっしりした時・重くなった時に 1 クリックで再起動。再起動待ちが不要です。'},
       {t:'並列終了で高速', d:'10 個以上のアプリを 1～2 秒で一斉終了。タスクマネージャーで一つずつ閉じる手間を削減します。'}
     ]
   },
   { no:'08', cat:'system', catLabel:'システム管理', name:'全プロセス終了', id:'ProcessAllDown', target:'全部署 / 終業時',
-    desc:'稼働中の全プロセスを終了後、システムを安全にシャットダウン。終業時の締め作業を一括化します。', href:'apps/ProcessAllDown_dist.zip',
+    desc:'稼働中の全プロセスを終了後、システムを安全にシャットダウン。終業時の締め作業を一括化します。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/ProcessAllDown_dist.zip',
     cases:[
       {t:'終業時の一括シャットダウン', d:'開きっぱなしの資料やアプリを 1 クリックで全て終了して電源オフまで実行。'},
       {t:'保存忘れの事故防止', d:'未保存ファイルがあるアプリは警告を表示し、データ消失のリスクを抑制。'}
@@ -869,14 +869,14 @@ const TOOLS = [
   },
   { no:'09', cat:'system', catLabel:'システム管理', name:'ファイル一括起動', id:'FileOpenAll', target:'全部署 / 業務開始時',
     desc:'指定フォルダ内のファイル・アプリを一括起動。朝礼資料や定型レポートの同時立ち上げに最適です。',
-    warn:'一部のアプリに制限あり', href:'apps/FileOpenAll_dist.zip',
+    warn:'一部のアプリに制限あり', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/FileOpenAll_dist.zip',
     cases:[
       {t:'まとめて起動', d:'業務進行中のファイル、アプリを登録しておくと、1クリックでまとめて開展。'},
       {t:'担当ごとのセット管理', d:'フォルダを分けるだけで「会計用」「営業用」など用途別のセットが作れます。'}
     ]
   },
   { no:'10', cat:'file',   catLabel:'ファイル操作', name:'ダウンロード一括削除', id:'download_delete', target:'全部署 / 個人利用',
-    desc:'ダウンロードフォルダ内の全ファイル・フォルダを一括クリア。ディスク容量管理と情報漏洩対策に。', href:'apps/download_delete.zip',
+    desc:'ダウンロードフォルダ内の全ファイル・フォルダを一括クリア。ディスク容量管理と情報漏洩対策に。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/download_delete.zip',
     cases:[
       {t:'ディスク容量の確保', d:'一時ファイルや機密資料のダウンロード残骸を一括削除し、PC 資源を綺麗に保てます。'},
       {t:'情報漏洩リスクの低減', d:'ダウンロードフォルダに個人情報・機密ファイルが残り続ける状態を防止。'},
@@ -884,7 +884,7 @@ const TOOLS = [
     ]
   },
   { no:'11', cat:'file',   catLabel:'ファイル操作', name:'スクリーンショット貼付', id:'paist', target:'業務部門 / 資料作成',
-    desc:'スクリーンショットを Web UI 上で選択してクリップボードへ自動コピー。資料作成の反復操作を削減します。', href:'apps/paist.zip',
+    desc:'スクリーンショットを Web UI 上で選択してクリップボードへ自動コピー。資料作成の反復操作を削減します。', href:'https://github.com/ogaron11-bit/AI_index-supply_version/releases/download/v1.0/paist.zip',
     cases:[
       {t:'資料作成の高速化', d:'エディタを開く→操作画面のキャプチャを 1 クリックで実現する。'},
       {t:'複数画面の一括処理', d:'複数のスクリーンショットを一覧から必要なものだけサムネイルで選択して貼付。'}
