@@ -652,8 +652,38 @@ footer {
 #scrollTop.visible { opacity: 1; transform: translateY(0); }
 #scrollTop:hover { background: #111; }
 </style>
+<!-- ─── アクセス期限制御 ─── -->
+<style>
+  html.page-expired body > *:not(#__expire_overlay__) { display: none !important; }
+  #__expire_overlay__ { display: none; }
+  html.page-expired #__expire_overlay__ {
+    display: flex !important;
+    position: fixed; inset: 0;
+    background: #111; color: #fff;
+    font-family: -apple-system, 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', sans-serif;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 2147483647;
+    text-align: center;
+    padding: 24px;
+  }
+</style>
+<script>
+(function(){
+  // 公開期限：2026-05-31 23:59:59 (JST)
+  var EXPIRE_AT = new Date('2026-05-31T23:59:59+09:00').getTime();
+  if (Date.now() >= EXPIRE_AT) {
+    document.documentElement.classList.add('page-expired');
+  }
+})();
+</script>
 </head>
 <body>
+<div id="__expire_overlay__">
+  <div style="font-size:3.5rem;margin-bottom:1.5rem;">&#9201;</div>
+  <div style="font-size:1.8rem;font-weight:bold;margin-bottom:0.75rem;">このページは公開期限を過ぎました</div>
+  <div style="font-size:0.95rem;opacity:0.6;">公開期間は 2026-05-31 までです。</div>
+</div>
 
 <!-- ─── ヘッダー ─── -->
 <header>
